@@ -1,0 +1,85 @@
+npm warn Unknown project config "strict-peer-dependencies". This will stop working in the next major version of npm.
+src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx(18,20): error TS2304: Cannot find name 'franchiseId'.
+src/app/api/razorpay/create-order/route.ts(45,31): error TS2339: Property 'razorpayManagement' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/app/api/razorpay/create-qr/route.ts(50,48): error TS2339: Property 'razorpayManagement' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/app/api/razorpay/verify-payment/route.ts(48,31): error TS2339: Property 'razorpayManagement' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/app/api/razorpay/webhook/route.ts(15,35): error TS2339: Property 'platformWallet' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/app/api/razorpay/webhook/route.ts(46,44): error TS2339: Property 'razorpayManagement' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/app/api/razorpay/webhook/route.ts(50,33): error TS2339: Property 'razorpayManagement' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/app/api/razorpay/webhook/route.ts(57,35): error TS2339: Property 'platformWallet' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/app/api/razorpay/webhook/route.ts(72,33): error TS2339: Property 'razorpayManagement' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/app/api/razorpay/webhook/route.ts(93,33): error TS2339: Property 'razorpayManagement' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/app/api/razorpay/webhook/route.ts(105,33): error TS2339: Property 'razorpayManagement' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/components/admin/ProcessMonthlyPayout.tsx(10,21): error TS2307: Cannot find module '../../../../convex/_generated/api' or its corresponding type declarations.
+src/components/admin/ProcessMonthlyPayout.tsx(11,20): error TS2307: Cannot find module '../../../../convex/_generated/dataModel' or its corresponding type declarations.
+src/components/admin/wallet/CompanyWallet.tsx(18,8): error TS2307: Cannot find module '@/lib/companyWalletUtils' or its corresponding type declarations.
+src/components/app/franchise/FranchisePOSWallet.tsx(8,29): error TS2307: Cannot find module '@/lib/coingecko' or its corresponding type declarations.
+src/components/app/franchise/store/FranchiseStore.tsx(129,31): error TS2339: Property 'updateWalletBalance' does not exist on type '{ wallet: UserWallet; refreshWallet: () => Promise<void>; addMockedINR: (amount: number) => void; }'.
+src/components/app/franchise/store/FranchiseStore.tsx(258,50): error TS2307: Cannot find module '@/lib/franchisePDA' or its corresponding type declarations.
+src/components/app/franchise/store/FranchiseStore.tsx(380,20): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(381,68): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(386,50): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(449,37): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(1632,106): error TS2339: Property 'usdcBalance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(1660,67): error TS2339: Property 'usdcBalance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(1673,141): error TS2339: Property 'usdcBalance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(1719,20): error TS2304: Cannot find name 'CrossmintEmbeddedCheckout'.
+src/components/app/franchise/store/FranchiseStore.tsx(1756,125): error TS2339: Property 'usdcBalance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(1795,105): error TS2307: Cannot find module '@/lib/franchisePDA' or its corresponding type declarations.
+src/components/app/franchise/store/FranchiseStore.tsx(1911,74): error TS2307: Cannot find module '@/lib/franchisePDA' or its corresponding type declarations.
+src/components/app/franchise/store/FranchiseStore.tsx(1945,70): error TS2307: Cannot find module '@/lib/franchisePDA' or its corresponding type declarations.
+src/components/app/franchise/store/FranchiseStore.tsx(1969,36): error TS2339: Property 'usdcBalance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(2107,35): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(2124,67): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(2131,44): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(2152,122): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/app/franchise/store/FranchiseStore.tsx(2257,32): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/app/franchise/WalletDebugger.tsx(7,51): error TS2307: Cannot find module '@/lib/solanaWalletUtils' or its corresponding type declarations.
+src/components/app/franchisee/PropertyDashboard.tsx(21,27): error TS2307: Cannot find module '@/components/solana/use-solana' or its corresponding type declarations.
+src/components/app/franchisee/UserWallet.tsx(29,34): error TS2339: Property 'addMockedUSDC' does not exist on type '{ wallet: UserWallet; refreshWallet: () => Promise<void>; addMockedINR: (amount: number) => void; }'.
+src/components/app/franchisee/UserWallet.tsx(30,37): error TS2339: Property 'usdcBalance' does not exist on type 'UserWallet'.
+src/components/app/franchiser/ApprovalTab.tsx(23,96): error TS2307: Cannot find module '@/lib/realWalletGenerator' or its corresponding type declarations.
+src/components/app/franchiser/BrandWallet.tsx(12,29): error TS2307: Cannot find module '@/lib/coingecko' or its corresponding type declarations.
+src/components/app/franchiser/FranchiserRegister.tsx(864,52): error TS2307: Cannot find module '@/lib/brandWalletUtils' or its corresponding type declarations.
+src/components/app/HamburgerMenu.tsx(329,63): error TS2322: Type '{ closed: { x: string; transition: { type: string; stiffness: number; damping: number; }; }; open: { x: number; transition: { type: string; stiffness: number; damping: number; }; }; }' is not assignable to type 'Variants'.
+  Property 'closed' is incompatible with index signature.
+    Type '{ x: string; transition: { type: string; stiffness: number; damping: number; }; }' is not assignable to type 'Variant'.
+      Type '{ x: string; transition: { type: string; stiffness: number; damping: number; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ x: string; transition: { type: string; stiffness: number; damping: number; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ type: string; stiffness: number; damping: number; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'type' are incompatible.
+                    Type 'string' is not assignable to type 'AnimationGeneratorType | undefined'.
+src/components/app/payments/BankAccountForm.tsx(5,10): error TS2305: Module '"react-hook-form"' has no exported member 'useForm'.
+src/components/app/payments/BankAccountForm.tsx(61,41): error TS2339: Property 'razorpayManagement' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/components/app/payments/BankAccountForm.tsx(157,40): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/components/app/payments/BankAccountForm.tsx(175,44): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/components/app/payments/BankAccountForm.tsx(189,44): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/components/app/payments/BankAccountForm.tsx(204,40): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/components/app/payments/BankAccountForm.tsx(241,44): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/components/app/payments/BankAccountForm.tsx(260,44): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/components/app/payments/PlatformWallet.tsx(31,35): error TS2339: Property 'platformWallet' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/components/app/payments/PlatformWallet.tsx(35,37): error TS2339: Property 'platformWallet' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/components/app/payments/PlatformWallet.tsx(117,15): error TS2322: Type '"platform_wallet_load"' is not assignable to type '"franchise_fee" | "setup_cost" | "working_capital" | "platform_subscription" | "in_store"'.
+src/components/app/payments/PlatformWallet.tsx(145,30): error TS7006: Parameter 'tx' implicitly has an 'any' type.
+src/components/app/payments/PlatformWallet.tsx(191,35): error TS2339: Property 'platformWallet' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/components/app/payments/PlatformWallet.tsx(227,33): error TS2339: Property 'platformWallet' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/components/app/payments/PlatformWallet.tsx(229,35): error TS2339: Property 'platformWallet' does not exist on type '{ userFavorites: { toggleFavorite: FunctionReference<"mutation", "public", { userId: Id<"users">; franchiserId: Id<"franchiser">; }, { action: "removed"; } | { action: "added"; }, string | undefined>; getUserFavorites: FunctionReference<...>; isFavorite: FunctionReference<...>; }; ... 37 more ...; userManagement: { ...'.
+src/components/app/WalletComp.tsx(7,29): error TS2307: Cannot find module '@/lib/coingecko' or its corresponding type declarations.
+src/components/app/WalletInfo.tsx(90,58): error TS2339: Property 'balance' does not exist on type 'UserWallet'.
+src/components/default/account-dropdown.tsx(18,10): error TS2300: Duplicate identifier 'useAuth'.
+src/components/default/account-dropdown.tsx(19,10): error TS2300: Duplicate identifier 'useAuth'.
+src/components/default/app-header.tsx(9,33): error TS2307: Cannot find module '@/components/default/cluster-dropdown' or its corresponding type declarations.
+src/components/default/app-layout.tsx(6,34): error TS2307: Cannot find module '@/features/cluster/ui/cluster-ui-checker' or its corresponding type declarations.
+src/components/default/app-layout.tsx(7,34): error TS2307: Cannot find module '@/features/account/ui/account-ui-checker' or its corresponding type declarations.
+src/components/marketplace/ApplicationModal.tsx(12,10): error TS2305: Module '"react-hook-form"' has no exported member 'useForm'.
+src/components/ui/form.tsx(7,3): error TS2305: Module '"react-hook-form"' has no exported member 'Controller'.
+src/components/ui/form.tsx(8,3): error TS2305: Module '"react-hook-form"' has no exported member 'FormProvider'.
+src/components/ui/form.tsx(9,3): error TS2305: Module '"react-hook-form"' has no exported member 'useFormContext'.
+src/components/ui/form.tsx(10,3): error TS2305: Module '"react-hook-form"' has no exported member 'useFormState'.
+src/components/ui/form.tsx(11,8): error TS2305: Module '"react-hook-form"' has no exported member 'ControllerProps'.
+src/components/ui/form.tsx(12,8): error TS2305: Module '"react-hook-form"' has no exported member 'FieldPath'.
+src/components/ui/form.tsx(13,8): error TS2305: Module '"react-hook-form"' has no exported member 'FieldValues'.
+src/lib/testFranchisePDA.ts(2,58): error TS2307: Cannot find module './franchisePDA' or its corresponding type declarations.

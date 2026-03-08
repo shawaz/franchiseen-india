@@ -1,0 +1,10 @@
+Fix wallet system: replace Solana with Razorpay/PlatformWallet
+
+- Remove useUserWallet from SharesTab, TransactionsTab, InvoicesTab
+- Fix FranchiseStore wallet display and buy-with-credits flow
+- Fix walletKeypairs.ts, solanaTransactions.ts (Solana removed stubs)
+- Fix schema: make inrBalance/usdBalance optional for legacy records
+- Fix FranchiseDashboard, FranchiseWallet, FranchisePOS field names
+- Convex backend now deploys cleanly (0 Solana import errors)
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

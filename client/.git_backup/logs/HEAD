@@ -1,0 +1,10 @@
+0000000000000000000000000000000000000000 0df83a09042b32f4116589e079435ef21f703f25 Codelude <codelude@gmail.com> 1772297740 +0530	clone: from https://github.com/shawaz/franchiseen.git
+0df83a09042b32f4116589e079435ef21f703f25 c6537203eaca7c44959424ae0616faec0b07c79d Codelude <codelude@gmail.com> 1772366180 +0530	commit: Updated crossmint
+c6537203eaca7c44959424ae0616faec0b07c79d 70c76b2555869ce3ced50bbdacd08329a8e646a6 Codelude <codelude@gmail.com> 1772896000 +0530	commit: fixed mobile menu and account wallet
+70c76b2555869ce3ced50bbdacd08329a8e646a6 2294dec4b92e3b52f3c034decf4b4a2b843d319c Codelude <codelude@gmail.com> 1772898914 +0530	commit: fixed mobile menu and account wallet -2
+2294dec4b92e3b52f3c034decf4b4a2b843d319c 867583889b55db2aaebdf1e092acc3750167b86d Codelude <codelude@gmail.com> 1772907604 +0530	commit: updated crossmint franchise
+867583889b55db2aaebdf1e092acc3750167b86d 98201ab536816472aa923889dea132ab367ba347 Codelude <codelude@gmail.com> 1772943124 +0530	commit: Sparated game and real
+98201ab536816472aa923889dea132ab367ba347 37a10c5f816ab4511787f3ab3700cb3b8abaa6cb Codelude <codelude@gmail.com> 1772949454 +0530	commit: Configure environment domains and convex provider
+37a10c5f816ab4511787f3ab3700cb3b8abaa6cb 37a10c5f816ab4511787f3ab3700cb3b8abaa6cb Codelude <codelude@gmail.com> 1772949476 +0530	checkout: moving from main to staging
+37a10c5f816ab4511787f3ab3700cb3b8abaa6cb 37a10c5f816ab4511787f3ab3700cb3b8abaa6cb Codelude <codelude@gmail.com> 1772949592 +0530	checkout: moving from staging to main
+37a10c5f816ab4511787f3ab3700cb3b8abaa6cb a42a4f419f6b08e5df068a30d97c1ce5036b12fa Codelude <codelude@gmail.com> 1772996788 +0530	commit: Fix wallet system: replace Solana with Razorpay/PlatformWallet

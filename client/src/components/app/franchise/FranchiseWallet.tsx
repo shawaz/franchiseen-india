@@ -1,0 +1,522 @@
+"use client";
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Copy, Wallet, ArrowUpDown, CreditCard, RefreshCw, ExternalLink } from 'lucide-react';
+import { toast } from 'sonner';
+import Image from 'next/image';
+import { useQuery } from 'convex/react';
+import { api } from '../../../../convex/_generated/api';
+import { Id } from '../../../../convex/_generated/dataModel';
+import { Button } from '@/components/ui/button';
+
+interface FranchiseWalletProps {
+  franchiseId: Id<"franchises">;
+  franchiseName?: string;
+  franchiseLogo?: string;
+  className?: string;
+  onBuyTokens?: () => void;
+  onCheckout?: () => void;
+  cartItemsCount?: number;
+  franchiseStatus?: string;
+  franchiseStage?: string;
+}
+
+
+
+const FranchiseWallet: React.FC<FranchiseWalletProps> = ({
+  franchiseId,
+  franchiseName = 'Franchise',
+  franchiseLogo = '/logo/logo-4.svg',
+  className = '',
+  onBuyTokens,
+  onCheckout,
+  cartItemsCount = 0,
+  franchiseStatus,
+  franchiseStage,
+}) => {
+  // State for wallet data
+  const [balance, setBalance] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [, setIsDemoBalance] = useState<boolean>(false);
+
+  // Get franchise wallet data from database (includes franchise data)
+  const franchiseWallet = useQuery(
+    api.franchiseManagement.getFranchiseWallet,
+    { franchiseId }
+  );
+
+
+  // Get franchise token data for token name and symbol
+  const franchiseToken = useQuery(
+    api.tokenManagement.getFranchiseToken,
+    franchiseId ? { franchiseId } : "skip"
+  );
+
+  // Get fundraising data for progress calculations
+  const fundraisingData = useQuery(
+    api.franchiseManagement.getFranchiseFundraisingDataById,
+    franchiseId ? { franchiseId } : "skip"
+  );
+
+
+  // Get wallet address from franchise wallet data
+  const walletAddress = franchiseWallet?.walletAddress;
+
+
+
+  const fetchBalance = useCallback(async (address: string) => {
+    // Just mock it for now
+    setBalance(0);
+    setIsDemoBalance(true);
+  }, []);
+
+  // Update wallet info from database and fetch real balance
+  useEffect(() => {
+    if (walletAddress) {
+      setLoading(true);
+
+      // If franchise is in launching/ongoing stage, use database balance
+      if (franchiseWallet?.franchise?.stage === 'launching' || franchiseWallet?.franchise?.stage === 'ongoing') {
+        // Use database balance for launched franchises
+        setBalance(franchiseWallet.balance || 0); // Use actual SOL balance from database
+        setIsDemoBalance(false);
+        setLoading(false);
+      } else {
+        // Fetch real balance from Solana network for funding stage
+        fetchBalance(walletAddress).finally(() => setLoading(false));
+      }
+    } else {
+      // No wallet address available - for approved franchises without wallets yet, start with 0 balance
+      setLoading(false);
+      setBalance(0);
+      setIsDemoBalance(franchiseStatus === 'approved' ? false : true);
+    }
+  }, [walletAddress, fetchBalance, franchiseWallet, franchiseStatus]);
+
+
+
+  const copyWalletAddress = () => {
+    if (walletAddress) {
+      navigator.clipboard.writeText(walletAddress);
+      toast.success('Wallet address copied to clipboard!');
+    }
+  };
+
+  // Removed unused functions: handleRefresh, handleTransfer, handleWithdraw
+
+  // Show loading state if wallet data is not available
+  if (franchiseWallet === undefined) {
+    return (
+      <div className={className}>
+        {/* Franchise Header */}
+        <div className="p-3 sm:p-4 bg-white dark:bg-stone-800/50 border border-gray-200 dark:border-stone-700">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {/* Franchise Logo */}
+              <div className="w-10 h-10 overflow-hidden bg-white/20 flex items-center justify-center">
+                <Image
+                  src={franchiseLogo}
+                  alt="Franchise Logo"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                  unoptimized
+                />
+              </div>
+              <div>
+                <h3 className="font-semibold text-md text-gray-900 dark:text-white">
+                  {franchiseName}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-mono text-gray-600 dark:text-gray-300">
+                    Loading wallet...
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Wallet Connection Status */}
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="default"
+                className="bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400"
+              >
+                <Wallet className="h-3 w-3 mr-1" />
+                Loading
+              </Badge>
+            </div>
+          </div>
+        </div>
+
+        {/* Loading Wallet Card */}
+        <div className="bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 text-white overflow-hidden">
+          <div className="p-4 sm:p-6">
+            <div className="grid grid-cols-2 gap-4">
+              {/* Balance (Raised) */}
+              <div>
+                <div className="text-gray-100 text-xs mb-1">
+                  Balance
+                </div>
+                <div className="text-2xl sm:text-3xl font-bold">
+                  Loading...
+                </div>
+              </div>
+              {/* Investment (Goal) & Status */}
+              <div className="text-right">
+                <div className="text-gray-100 text-xs mb-1">Investment</div>
+                <div className="text-2xl sm:text-3xl font-bold">
+                  Loading...
+                </div>
+                <div className="text-gray-200 text-xs mt-1 uppercase tracking-wider font-semibold">
+                  Status: Loading...
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-3 gap-3 mt-6">
+              <button
+                disabled
+                className="bg-white/20 border border-white/30 p-3 transition flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
+              >
+                <RefreshCw className="h-4 w-4" />
+                <span className="text-xs font-medium">REFRESH</span>
+              </button>
+
+              <button
+                disabled
+                className="bg-white/20 border border-white/30 p-3 transition flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
+              >
+                <ArrowUpDown className="h-4 w-4" />
+                <span className="text-xs font-medium">TRANSFER</span>
+              </button>
+
+              <button
+                disabled
+                className="bg-white/20 border border-white/30 p-3 transition flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
+              >
+                <CreditCard className="h-4 w-4" />
+                <span className="text-xs font-medium">WITHDRAW</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show waiting for approval state if no wallet exists AND franchise is still pending
+  // If franchise is approved but no wallet yet, continue to show funding stage
+  if (franchiseWallet === null && franchiseStatus === "pending") {
+    return (
+      <div className={className}>
+        {/* Franchise Header */}
+        <div className="p-3 sm:p-4 bg-white dark:bg-stone-800/50 border border-gray-200 dark:border-stone-700">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {/* Franchise Logo */}
+              <div className="w-10 h-10 overflow-hidden bg-white/20 flex items-center justify-center">
+                <Image
+                  src={franchiseLogo}
+                  alt="Franchise Logo"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                  unoptimized
+                />
+              </div>
+              <div>
+                <h3 className="font-semibold text-md text-gray-900 dark:text-white">
+                  {franchiseName}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Waiting for approval
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Status Badge */}
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="default"
+                className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
+              >
+                <Wallet className="h-3 w-3 mr-1" />
+                Pending Approval
+              </Badge>
+            </div>
+          </div>
+        </div>
+
+        {/* Waiting for Approval Card */}
+        <div className="bg-gradient-to-br from-yellow-400 via-yellow-500 to-yellow-600 text-white overflow-hidden">
+          <div className="p-4 sm:p-6">
+            <div className="text-center">
+              <div className="mb-4">
+                <Wallet className="h-12 w-12 mx-auto text-yellow-200" />
+              </div>
+              <h4 className="text-lg font-semibold mb-2">Waiting for Approval</h4>
+              <p className="text-yellow-100 text-sm mb-4">
+                Your franchise application is under review. Once approved, the wallet and token trading will be activated.
+              </p>
+              <div className="text-xs text-yellow-200 mb-4">
+                Approval typically takes 1-3 business days.
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Determine current stage from wallet data or props (for approved franchises without wallets yet)
+  const currentStage = franchiseWallet?.franchise?.stage || franchiseStage || 'funding';
+  // const franchiseStatus = 'approved'; // If wallet exists, franchise is approved
+
+  // Calculate funding progress
+  const totalInvestment = fundraisingData?.totalInvestment || 0;
+  const totalInvested = fundraisingData?.totalInvested || 0;
+  const fundingProgress = totalInvestment > 0 ? (totalInvested / totalInvestment) * 100 : 0;
+
+  // Calculate days remaining (30 days from franchise creation)
+  // Note: We'll need to get createdAt from the franchise data
+  // For now, let's use a default calculation
+  const franchiseCreatedAt = Date.now() - (15 * 24 * 60 * 60 * 1000); // Assume 15 days ago for demo
+
+  // Determine card color based on stage
+  const getCardColor = () => {
+    switch (currentStage) {
+      case 'funding': return 'from-blue-600 via-blue-700 to-blue-800';
+      case 'launching': return 'from-purple-600 via-purple-700 to-purple-800';
+      case 'ongoing': return 'from-green-600 via-green-700 to-green-800';
+      case 'closed': return 'from-red-600 via-red-700 to-red-800';
+      default: return 'from-blue-600 via-blue-700 to-blue-800';
+    }
+  };
+
+  // Get stage-specific content
+  const getStageContent = () => {
+    switch (currentStage) {
+      case 'funding':
+        return {
+          progress: fundingProgress,
+          goal: `$${totalInvestment.toLocaleString()}`,
+          raised: `$${totalInvested.toLocaleString()}`,
+          showBuyShares: true
+        };
+      case 'launching':
+        return {
+          startDate: new Date(franchiseCreatedAt + (30 * 24 * 60 * 60 * 1000)).toLocaleDateString(),
+          endDate: new Date(franchiseCreatedAt + (75 * 24 * 60 * 60 * 1000)).toLocaleDateString(),
+          showBuyShares: false
+        };
+      case 'ongoing':
+        const workingCapital = (franchiseWallet as { workingCapital?: number } | null)?.workingCapital || fundraisingData?.workingCapital || 0;
+        const currentBalance = franchiseWallet?.balance || 0;
+        const tokenSupply = franchiseToken?.totalSupply || 0;
+        const remainingToFill = Math.max(0, tokenSupply - currentBalance);
+        const progressPercentage = tokenSupply > 0 ? (currentBalance / tokenSupply) * 100 : 0;
+        return {
+          totalBudget: `$${workingCapital.toLocaleString()}`,
+          tokenSupply: tokenSupply,
+          remainingBudget: `$${currentBalance.toLocaleString()}`,
+          remainingToFill: remainingToFill,
+          remainingPercentage: progressPercentage,
+          showBuyShares: false
+        };
+      case 'closed':
+        return {
+          showBuyShares: false
+        };
+      default:
+        return {
+          showBuyShares: true
+        };
+    }
+  };
+
+  const stageContent = getStageContent();
+
+  return (
+    <div className={className}>
+      {/* Franchise Header */}
+      <div className="p-3 sm:p-4 bg-white dark:bg-stone-800/50 border border-gray-200 dark:border-stone-700">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {/* Franchise Logo */}
+            <div className="w-10 h-10 overflow-hidden bg-white/20 flex items-center justify-center">
+              <Image
+                src={franchiseLogo}
+                alt="Franchise Logo"
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+                unoptimized
+              />
+            </div>
+            <div>
+              <h3 className="font-semibold text-md text-gray-900 dark:text-white">
+                {franchiseToken?.tokenSymbol || franchiseWallet?.walletName || franchiseName}
+              </h3>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-mono text-gray-600 dark:text-gray-300">
+                  {walletAddress ? walletAddress : 'Wallet pending creation'}
+                </p>
+                {walletAddress && (
+                  <>
+                    <button
+                      onClick={copyWalletAddress}
+                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      <Copy className="h-3 w-3" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center justify-end">
+            <span className={`inline-block px-6 py-3 uppercase text-xs font-bold rounded-full ${currentStage === 'funding'
+              ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+              : currentStage === 'launching'
+                ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
+                : currentStage === 'ongoing'
+                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                  : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+              }`}>
+              {currentStage === 'ongoing' ? 'LIVE' : currentStage}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Wallet Card */}
+      <div className={`bg-gradient-to-br ${getCardColor()} text-white overflow-hidden`}>
+        <div className="p-4 sm:p-6">
+          {/* Balance Display */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Investment (Goal) & Status */}
+            <div className="text-left">
+              <div className="text-white/80 text-xs mb-1">Investment</div>
+              <div className="text-2xl sm:text-3xl font-bold">
+                ${totalInvestment.toLocaleString()}
+              </div>
+
+            </div>
+            {/* Balance (Raised/Current) */}
+            <div className="text-right">
+              <div className="text-white/80 text-xs mb-1">
+                Balance
+              </div>
+              <div className="text-2xl sm:text-3xl font-bold">
+                ${(currentStage === 'ongoing' || currentStage === 'launching' || currentStage === 'closed')
+                  ? (franchiseWallet?.balance || 0).toLocaleString()
+                  : totalInvested.toLocaleString()}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Stage-specific content */}
+          <div className="mt-4">
+            {currentStage === 'funding' && (
+              <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-white transition-all duration-300"
+                  style={{ width: `${Math.min(fundingProgress, 100)}%` }}
+                ></div>
+              </div>
+            )}
+            {currentStage === 'launching' && (
+              <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-white transition-all duration-300"
+                  style={{ width: '100%' }}
+                ></div>
+              </div>
+            )}
+            {currentStage === 'ongoing' && (
+              <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-white transition-all duration-300"
+                  style={{ width: `${Math.min(stageContent.remainingPercentage || 0, 100)}%` }}
+                ></div>
+              </div>
+            )}
+            {currentStage === 'closed' && (
+              <div className="h-2 bg-white/20 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-white transition-all duration-300"
+                  style={{ width: '100%' }}
+                ></div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Wallet Footer */}
+      <div className="p-3 sm:p-4 bg-white dark:bg-stone-800/50 border border-gray-200 dark:border-stone-700">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {currentStage === 'funding' && (
+              <div>
+                <h3 className="font-semibold text-md text-gray-900 dark:text-white">
+                  {Math.max(0, totalInvestment - totalInvested).toLocaleString()}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-mono text-gray-600 dark:text-gray-300">
+                    Remaining
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right side - Buy Tokens button for funding stage and Checkout for ongoing */}
+          <div className="flex items-center gap-2">
+            {stageContent.showBuyShares && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (onBuyTokens) {
+                    onBuyTokens();
+                  } else {
+                    toast.info('Buy tokens functionality will be implemented');
+                  }
+                }}
+              >
+                Buy Franchise
+              </Button>
+            )}
+
+            {/* Checkout button for ongoing stage */}
+            {franchiseStage === 'ongoing' && onCheckout && (
+              <Button
+                onClick={onCheckout}
+                className="bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-600 dark:hover:bg-yellow-700 relative"
+                disabled={cartItemsCount === 0}
+              >
+                <CreditCard className="h-4 w-4 mr-2" />
+                Checkout
+                {cartItemsCount > 0 && (
+                  <span className="ml-2 px-2 py-0.5 bg-white text-yellow-700 rounded-full text-xs font-bold">
+                    {cartItemsCount}
+                  </span>
+                )}
+              </Button>
+            )}
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FranchiseWallet;

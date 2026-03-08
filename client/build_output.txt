@@ -1,0 +1,706 @@
+npm warn Unknown project config "strict-peer-dependencies". This will stop working in the next major version of npm.
+
+> franchiseen@0.0.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local, .env
+
+  Creating an optimized production build ...
+Turbopack build encountered 3 warnings:
+./src/components/app/franchise/store/FranchiseStore.tsx:1797:98
+Module not found: Can't resolve '@/lib/franchisePDA'
+[0m [90m 1795 |[39m
+ [90m 1796 |[39m                         [90m// Get franchise PDA address (funding escrow account)[39m
+[31m[1m>[22m[39m[90m 1797 |[39m                         [36mconst[39m { getFranchisePDA[33m,[39m createFranchisePDA[33m,[39m storeFranchisePDA } [33m=[39m [36mawait[39m [36mimport[39m([32m'@/lib/franchisePDA'[39m)[33m;[39m
+ [90m      |[39m                                                                                                  [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 1798 |[39m                         [36mlet[39m franchisePDA [33m=[39m getFranchisePDA(franchiseId)[33m;[39m
+ [90m 1799 |[39m
+ [90m 1800 |[39m                         [90m// Create PDA if it doesn't exist[39m[0m
+
+Import map: aliased to relative './src/lib/franchisePDA' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/app/franchise/store/FranchiseStore.tsx:1913:67
+Module not found: Can't resolve '@/lib/franchisePDA'
+[0m [90m 1911 |[39m                         [90m// Update PDA with new shares (optional - for local state)[39m
+ [90m 1912 |[39m                         [36mif[39m (franchiseData[33m?[39m[33m.[39m_id) {
+[31m[1m>[22m[39m[90m 1913 |[39m                           [36mconst[39m { updatePDASharesIssued } [33m=[39m [36mawait[39m [36mimport[39m([32m'@/lib/franchisePDA'[39m)[33m;[39m
+ [90m      |[39m                                                                   [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 1914 |[39m                           [36mconst[39m currentPDA [33m=[39m [36mawait[39m getFranchisePDA(franchiseData[33m.[39m_id)[33m;[39m
+ [90m 1915 |[39m                           [36mif[39m (currentPDA) {
+ [90m 1916 |[39m                             [36mconst[39m newSharesIssued [33m=[39m currentPDA[33m.[39msharesIssued [33m+[39m tokensToBuy[33m;[39m[0m
+
+Import map: aliased to relative './src/lib/franchisePDA' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/app/franchise/store/FranchiseStore.tsx:1947:63
+Module not found: Can't resolve '@/lib/franchisePDA'
+[0m [90m 1945 |[39m                         [90m// Check if funding is complete[39m
+ [90m 1946 |[39m                         [36mif[39m (franchiseData[33m?[39m[33m.[39m_id) {
+[31m[1m>[22m[39m[90m 1947 |[39m                           [36mconst[39m { isFundingComplete } [33m=[39m [36mawait[39m [36mimport[39m([32m'@/lib/franchisePDA'[39m)[33m;[39m
+ [90m      |[39m                                                               [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 1948 |[39m                           [36mif[39m (isFundingComplete(franchiseData[33m.[39m_id [36mas[39m string)) {
+ [90m 1949 |[39m                             toast[33m.[39msuccess([32m'🎉 Funding target reached! Franchise will transition to launching stage.'[39m)[33m;[39m
+ [90m 1950 |[39m                           }[0m
+
+Import map: aliased to relative './src/lib/franchisePDA' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+> Build error occurred
+Error: Turbopack build failed with 19 errors:
+./src/lib/franchiseWalletUtils.ts:4:1
+Module not found: Can't resolve './solanaConfig'
+[0m [90m 2 |[39m [36mimport[39m bs58 [36mfrom[39m [32m'bs58'[39m[33m;[39m
+ [90m 3 |[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { getBestRpcUrl } [36mfrom[39m [32m'./solanaConfig'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m
+ [90m 6 |[39m [90m// Solana RPC endpoint - using Helius RPC for better performance[39m
+ [90m 7 |[39m [36mconst[39m [33mSOLANA_RPC_URL[39m [33m=[39m getBestRpcUrl([32m'mainnet'[39m)[33m;[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/lib/franchiseWalletUtils.ts [Client Component Browser]
+    ./src/components/app/franchise/FranchiseWallet.tsx [Client Component Browser]
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/lib/franchiseWalletUtils.ts [Client Component SSR]
+    ./src/components/app/franchise/FranchiseWallet.tsx [Client Component SSR]
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/app/franchise/store/FranchiseStore.tsx:60:1
+Module not found: Can't resolve '@/components/solana/WalletErrorBoundary'
+[0m [90m 58 |[39m [36mimport[39m [33mGoogleMapsLoader[39m [36mfrom[39m [32m'@/components/maps/GoogleMapsLoader'[39m[33m;[39m
+ [90m 59 |[39m [36mimport[39m { [33mGoogleMap[39m[33m,[39m [33mMarker[39m } [36mfrom[39m [32m'@react-google-maps/api'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 60 |[39m [36mimport[39m [33mWalletErrorBoundary[39m [36mfrom[39m [32m'@/components/solana/WalletErrorBoundary'[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 61 |[39m [36mimport[39m { useAuth } [36mfrom[39m [32m'@/contexts/PrivyAuthContext'[39m[33m;[39m
+ [90m 62 |[39m [36mimport[39m { useUserWallet } [36mfrom[39m [32m'@/hooks/useUserWallet'[39m[33m;[39m
+ [90m 63 |[39m [36mimport[39m { useRouter } [36mfrom[39m [32m'next/navigation'[39m[33m;[39m[0m
+
+Import map: aliased to relative './src/components/solana/WalletErrorBoundary' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/app/franchisee/invoices/InvoicesTab.tsx:6:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 4 |[39m [36mimport[39m { useQuery } [36mfrom[39m [32m'convex/react'[39m[33m;[39m
+ [90m 5 |[39m [36mimport[39m { api } [36mfrom[39m [32m'../../../../../convex/_generated/api'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mimport[39m { useConvexImageUrl } [36mfrom[39m [32m'@/hooks/useConvexImageUrl'[39m[33m;[39m
+ [90m 8 |[39m [36mimport[39m { [33mId[39m } [36mfrom[39m [32m'../../../../../convex/_generated/dataModel'[39m[33m;[39m
+ [90m 9 |[39m[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/app/franchisee/invoices/InvoicesTab.tsx [Client Component Browser]
+    ./src/components/app/franchisee/ProfileDashboard.tsx [Client Component Browser]
+    ./src/app/(platform)/account/page.tsx [Client Component Browser]
+    ./src/app/(platform)/account/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/app/franchisee/invoices/InvoicesTab.tsx [Client Component SSR]
+    ./src/components/app/franchisee/ProfileDashboard.tsx [Client Component SSR]
+    ./src/app/(platform)/account/page.tsx [Client Component SSR]
+    ./src/app/(platform)/account/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/app/franchisee/shares/SharesTab.tsx:7:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m  5 |[39m [36mimport[39m { api } [36mfrom[39m [32m'../../../../../convex/_generated/api'[39m[33m;[39m
+ [90m  6 |[39m [36mimport[39m { useRouter } [36mfrom[39m [32m'next/navigation'[39m[33m;[39m
+[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  8 |[39m [36mimport[39m { useConvexImageUrl } [36mfrom[39m [32m'@/hooks/useConvexImageUrl'[39m[33m;[39m
+ [90m  9 |[39m [36mimport[39m { useAuth } [36mfrom[39m [32m'@/contexts/PrivyAuthContext'[39m[33m;[39m
+ [90m 10 |[39m [36mimport[39m { [33mId[39m } [36mfrom[39m [32m'../../../../../convex/_generated/dataModel'[39m[33m;[39m[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/app/franchisee/shares/SharesTab.tsx [Client Component Browser]
+    ./src/components/app/franchisee/ProfileDashboard.tsx [Client Component Browser]
+    ./src/app/(platform)/account/page.tsx [Client Component Browser]
+    ./src/app/(platform)/account/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/app/franchisee/shares/SharesTab.tsx [Client Component SSR]
+    ./src/components/app/franchisee/ProfileDashboard.tsx [Client Component SSR]
+    ./src/app/(platform)/account/page.tsx [Client Component SSR]
+    ./src/app/(platform)/account/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/app/franchisee/transactions/TransactionsTab.tsx:19:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 17 |[39m   [33mAlertCircle[39m
+ [90m 18 |[39m } [36mfrom[39m [32m'lucide-react'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 19 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 20 |[39m [36mimport[39m { useAuth } [36mfrom[39m [32m'@/contexts/PrivyAuthContext'[39m[33m;[39m
+ [90m 21 |[39m [36mimport[39m { useQuery } [36mfrom[39m [32m'convex/react'[39m[33m;[39m
+ [90m 22 |[39m [36mimport[39m { api } [36mfrom[39m [32m'../../../../../convex/_generated/api'[39m[33m;[39m[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/app/franchisee/transactions/TransactionsTab.tsx [Client Component Browser]
+    ./src/components/app/franchisee/ProfileDashboard.tsx [Client Component Browser]
+    ./src/app/(platform)/account/page.tsx [Client Component Browser]
+    ./src/app/(platform)/account/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/app/franchisee/transactions/TransactionsTab.tsx [Client Component SSR]
+    ./src/components/app/franchisee/ProfileDashboard.tsx [Client Component SSR]
+    ./src/app/(platform)/account/page.tsx [Client Component SSR]
+    ./src/app/(platform)/account/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/default/app-explorer-link.tsx:2:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 1 |[39m [36mimport[39m { getExplorerLink[33m,[39m [33mGetExplorerLinkArgs[39m } [36mfrom[39m [32m'gill'[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { [33mArrowUpRightFromSquare[39m } [36mfrom[39m [32m'lucide-react'[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36mfunction[39m [33mAppExplorerLink[39m({[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/default/app-explorer-link.tsx [Client Component Browser]
+    ./src/components/default/toast-tx.tsx [Client Component Browser]
+    ./src/features/account/data-access/use-request-airdrop-mutation.ts [Client Component Browser]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component Browser]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/default/app-explorer-link.tsx [Client Component SSR]
+    ./src/components/default/toast-tx.tsx [Client Component SSR]
+    ./src/features/account/data-access/use-request-airdrop-mutation.ts [Client Component SSR]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component SSR]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/account/data-access/use-get-balance-query-key.ts:2:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 1 |[39m [36mimport[39m type { [33mAddress[39m } [36mfrom[39m [32m'gill'[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m
+ [90m 4 |[39m [36mexport[39m [36mfunction[39m useGetBalanceQueryKey({ address }[33m:[39m { address[33m:[39m [33mAddress[39m }) {
+ [90m 5 |[39m   [36mconst[39m { cluster } [33m=[39m useSolana()[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/features/account/data-access/use-get-balance-query-key.ts [Client Component Browser]
+    ./src/features/account/data-access/use-get-balance-query.ts [Client Component Browser]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component Browser]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/account/data-access/use-get-balance-query-key.ts [Client Component SSR]
+    ./src/features/account/data-access/use-get-balance-query.ts [Client Component SSR]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component SSR]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/account/data-access/use-get-balance-query.ts:3:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 1 |[39m [36mimport[39m type { [33mAddress[39m } [36mfrom[39m [32m'gill'[39m
+ [90m 2 |[39m [36mimport[39m { useQuery } [36mfrom[39m [32m'@tanstack/react-query'[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mimport[39m { useGetBalanceQueryKey } [36mfrom[39m [32m'./use-get-balance-query-key'[39m
+ [90m 5 |[39m
+ [90m 6 |[39m [36mexport[39m [36mfunction[39m useGetBalanceQuery({ address }[33m:[39m { address[33m:[39m [33mAddress[39m }) {[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/features/account/data-access/use-get-balance-query.ts [Client Component Browser]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component Browser]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/account/data-access/use-get-balance-query.ts [Client Component SSR]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component SSR]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/account/data-access/use-get-signatures-query-key.ts:2:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 1 |[39m [36mimport[39m type { [33mAddress[39m } [36mfrom[39m [32m'gill'[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m
+ [90m 4 |[39m [36mexport[39m [36mfunction[39m useGetSignaturesQueryKey({ address }[33m:[39m { address[33m:[39m [33mAddress[39m }) {
+ [90m 5 |[39m   [36mconst[39m { cluster } [33m=[39m useSolana()[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/features/account/data-access/use-get-signatures-query-key.ts [Client Component Browser]
+    ./src/features/account/data-access/use-invalidate-get-signatures-query.ts [Client Component Browser]
+    ./src/features/account/data-access/use-request-airdrop-mutation.ts [Client Component Browser]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component Browser]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/account/data-access/use-get-signatures-query-key.ts [Client Component SSR]
+    ./src/features/account/data-access/use-invalidate-get-signatures-query.ts [Client Component SSR]
+    ./src/features/account/data-access/use-request-airdrop-mutation.ts [Client Component SSR]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component SSR]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/account/data-access/use-request-airdrop-mutation.ts:3:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 1 |[39m [36mimport[39m { useMutation } [36mfrom[39m [32m'@tanstack/react-query'[39m
+ [90m 2 |[39m [36mimport[39m { type [33mAddress[39m[33m,[39m airdropFactory[33m,[39m lamports } [36mfrom[39m [32m'gill'[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mimport[39m { toastTx } [36mfrom[39m [32m'@/components/default/toast-tx'[39m
+ [90m 5 |[39m [36mimport[39m { useInvalidateGetBalanceQuery } [36mfrom[39m [32m'./use-invalidate-get-balance-query'[39m
+ [90m 6 |[39m [36mimport[39m { useInvalidateGetSignaturesQuery } [36mfrom[39m [32m'./use-invalidate-get-signatures-query'[39m[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/features/account/data-access/use-request-airdrop-mutation.ts [Client Component Browser]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component Browser]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/account/data-access/use-request-airdrop-mutation.ts [Client Component SSR]
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component SSR]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/account/ui/account-ui-balance-check.tsx:4:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 2 |[39m [36mimport[39m { [33mAppAlert[39m } [36mfrom[39m [32m'@/components/default/app-alert'[39m
+ [90m 3 |[39m [36mimport[39m { [33mButton[39m } [36mfrom[39m [32m'@/components/ui/button'[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [36mimport[39m { useRequestAirdropMutation } [36mfrom[39m [32m'../data-access/use-request-airdrop-mutation'[39m
+ [90m 6 |[39m [36mimport[39m { useGetBalanceQuery } [36mfrom[39m [32m'../data-access/use-get-balance-query'[39m
+ [90m 7 |[39m[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component Browser]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/account/ui/account-ui-balance-check.tsx [Client Component SSR]
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/account/ui/account-ui-checker.tsx:2:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 1 |[39m [36mimport[39m { address } [36mfrom[39m [32m'gill'[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { [33mAccountUiBalanceCheck[39m } [36mfrom[39m [32m'./account-ui-balance-check'[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36mfunction[39m [33mAccountUiChecker[39m() {[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/account/ui/account-ui-checker.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/cluster/data-access/use-cluster-version.ts:2:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 1 |[39m [36mimport[39m { useQuery } [36mfrom[39m [32m'@tanstack/react-query'[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m
+ [90m 4 |[39m [36mexport[39m [36mfunction[39m useClusterVersion() {
+ [90m 5 |[39m   [36mconst[39m { client[33m,[39m cluster } [33m=[39m useSolana()[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/features/cluster/data-access/use-cluster-version.ts [Client Component Browser]
+    ./src/features/cluster/ui/cluster-ui-checker.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/cluster/data-access/use-cluster-version.ts [Client Component SSR]
+    ./src/features/cluster/ui/cluster-ui-checker.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/features/cluster/ui/cluster-ui-checker.tsx:4:1
+Module not found: Can't resolve '@/components/solana/use-solana'
+[0m [90m 2 |[39m [36mimport[39m { [33mButton[39m } [36mfrom[39m [32m'@/components/ui/button'[39m
+ [90m 3 |[39m [36mimport[39m { [33mAppAlert[39m } [36mfrom[39m [32m'@/components/default/app-alert'[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { useSolana } [36mfrom[39m [32m'@/components/solana/use-solana'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [36mimport[39m { useClusterVersion } [36mfrom[39m [32m'../data-access/use-cluster-version'[39m
+ [90m 6 |[39m
+ [90m 7 |[39m [36mexport[39m [36mfunction[39m [33mClusterUiChecker[39m({ children }[33m:[39m { children[33m:[39m [33mReactNode[39m }) {[0m
+
+Import map: aliased to relative './src/components/solana/use-solana' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/features/cluster/ui/cluster-ui-checker.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Client Component Browser]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/cluster/ui/cluster-ui-checker.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Client Component SSR]
+    ./src/components/default/app-layout.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/app/franchise/store/FranchiseStore.tsx:260:43
+Module not found: Can't resolve '@/lib/franchisePDA'
+[0m [90m 258 |[39m     [36mconst[39m updatePDA [33m=[39m [36masync[39m () [33m=>[39m {
+ [90m 259 |[39m       [36mif[39m (franchiseData[33m?[39m[33m.[39m_id [33m&&[39m fundraisingData) {
+[31m[1m>[22m[39m[90m 260 |[39m         [36mconst[39m { getFranchisePDA } [33m=[39m [36mawait[39m [36mimport[39m([32m'@/lib/franchisePDA'[39m)[33m;[39m
+ [90m     |[39m                                           [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 261 |[39m         [36mconst[39m pda [33m=[39m getFranchisePDA(franchiseData[33m.[39m_id)[33m;[39m
+ [90m 262 |[39m         [36mif[39m (pda) {
+ [90m 263 |[39m           [90m// Update PDA with real fundraising data[39m[0m
+
+Import map: aliased to relative './src/lib/franchisePDA' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/default/account-dropdown.tsx:20:1
+Module not found: Can't resolve '@/lib/solanaConnection'
+[0m [90m 18 |[39m [36mimport[39m { useAuth } [36mfrom[39m [32m'@/contexts/PrivyAuthContext'[39m[33m;[39m
+ [90m 19 |[39m [36mimport[39m { useNetwork } [36mfrom[39m [32m'@/contexts/NetworkContext'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 20 |[39m [36mimport[39m { getSolanaConnection } [36mfrom[39m [32m'@/lib/solanaConnection'[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 21 |[39m
+ [90m 22 |[39m [36minterface[39m [33mAccountDropdownProps[39m {
+ [90m 23 |[39m   balance[33m?[39m[33m:[39m number[33m;[39m[0m
+
+Import map: aliased to relative './src/lib/solanaConnection' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/default/account-dropdown.tsx [Client Component Browser]
+    ./src/components/auth/AuthHeader.tsx [Client Component Browser]
+    ./src/components/app/Header.tsx [Client Component Browser]
+    ./src/components/app/Header.tsx [Server Component]
+    ./src/app/(platform)/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/default/account-dropdown.tsx [Client Component SSR]
+    ./src/components/auth/AuthHeader.tsx [Client Component SSR]
+    ./src/components/app/Header.tsx [Client Component SSR]
+    ./src/components/app/Header.tsx [Server Component]
+    ./src/app/(platform)/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx:5:1
+Module not found: Can't resolve '@/lib/solanaWalletUtils'
+[0m [90m 3 |[39m [36mimport[39m [33mReact[39m[33m,[39m { useEffect[33m,[39m useState[33m,[39m use } [36mfrom[39m [32m'react'[39m[33m;[39m
+ [90m 4 |[39m [36mimport[39m [33mFranchiseStore[39m [36mfrom[39m [32m'@/components/app/franchise/store/FranchiseStore'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 5 |[39m [36mimport[39m { getStoredWallet } [36mfrom[39m [32m'@/lib/solanaWalletUtils'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 6 |[39m
+ [90m 7 |[39m [36minterface[39m [33mFranchiseAccountProps[39m {
+ [90m 8 |[39m   params[33m:[39m [33mPromise[39m[33m<[39m{[0m
+
+Import map: aliased to relative './src/lib/solanaWalletUtils' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/default/account-dropdown.tsx:98:11
+Module not found: Can't resolve '@/lib/solanaWalletUtils'
+[0m [90m  96 |[39m         [36mconst[39m currentWallet [33m=[39m localStorage[33m.[39mgetItem([32m'userWalletAddress'[39m)[33m;[39m
+ [90m  97 |[39m         [36mif[39m (currentWallet) {
+[31m[1m>[22m[39m[90m  98 |[39m           [36mimport[39m([32m'@/lib/solanaWalletUtils'[39m)[33m.[39mthen(({ getWalletBalance }) [33m=>[39m {
+ [90m     |[39m           [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  99 |[39m             getWalletBalance(currentWallet)[33m.[39mthen((newBalance) [33m=>[39m {
+ [90m 100 |[39m               updateWalletBalance(newBalance)[33m;[39m
+ [90m 101 |[39m             })[33m.[39m[36mcatch[39m((error) [33m=>[39m {[0m
+
+Import map: aliased to relative './src/lib/solanaWalletUtils' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/default/account-dropdown.tsx [Client Component Browser]
+    ./src/components/auth/AuthHeader.tsx [Client Component Browser]
+    ./src/components/app/Header.tsx [Client Component Browser]
+    ./src/components/app/Header.tsx [Server Component]
+    ./src/app/(platform)/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/default/account-dropdown.tsx [Client Component SSR]
+    ./src/components/auth/AuthHeader.tsx [Client Component SSR]
+    ./src/components/app/Header.tsx [Client Component SSR]
+    ./src/components/app/Header.tsx [Server Component]
+    ./src/app/(platform)/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/components/app/franchise/store/FranchiseStore.tsx:64:1
+Module not found: Can't resolve '@crossmint/client-sdk-react-ui'
+[0m [90m 62 |[39m [36mimport[39m { useUserWallet } [36mfrom[39m [32m'@/hooks/useUserWallet'[39m[33m;[39m
+ [90m 63 |[39m [36mimport[39m { useRouter } [36mfrom[39m [32m'next/navigation'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 64 |[39m [36mimport[39m { [33mCrossmintEmbeddedCheckout[39m } [36mfrom[39m [32m"@crossmint/client-sdk-react-ui"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 65 |[39m [36mimport[39m type {
+ [90m 66 |[39m   [33mProduct[39m[33m,[39m
+ [90m 67 |[39m   [33mFranchisee[39m[33m,[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component Browser]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/app/franchise/store/FranchiseStore.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Client Component SSR]
+    ./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./src/lib/franchiseWalletUtils.ts:4:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/app/franchise/store/FranchiseStore.tsx:60:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/app/franchisee/invoices/InvoicesTab.tsx:6:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/app/franchisee/shares/SharesTab.tsx:7:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/app/franchisee/transactions/TransactionsTab.tsx:19:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/default/app-explorer-link.tsx:2:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/account/data-access/use-get-balance-query-key.ts:2:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/account/data-access/use-get-balance-query.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/account/data-access/use-get-signatures-query-key.ts:2:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/account/data-access/use-request-airdrop-mutation.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/account/ui/account-ui-balance-check.tsx:4:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/account/ui/account-ui-checker.tsx:2:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/cluster/data-access/use-cluster-version.ts:2:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/features/cluster/ui/cluster-ui-checker.tsx:4:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/app/franchise/store/FranchiseStore.tsx:260:43)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/default/account-dropdown.tsx:20:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/app/(platform)/[brandSlug]/[franchiseSlug]/page.tsx:5:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/default/account-dropdown.tsx:98:11)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/components/app/franchise/store/FranchiseStore.tsx:64:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)

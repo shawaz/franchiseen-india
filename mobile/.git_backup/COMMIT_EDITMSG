@@ -1,0 +1,10 @@
+Connect mobile app to Convex/Clerk backend
+
+- Rebrand sign-in screen to Franchiseen
+- Connect select-franchise to real Convex data
+- Connect investment-details to real brand pricing (INR)
+- Submit applications via Convex mutation
+- Fix sign-out to use Clerk signOut()
+- Replace mock profile outlets with real Convex stores
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
