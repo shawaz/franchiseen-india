@@ -39,49 +39,6 @@ export const getAllFranchisersByUserId = query({
   },
 });
 
-// Legacy query for backward compatibility - get franchiser by wallet address
-export const getFranchiserByWallet = query({
-  args: { walletAddress: v.string() },
-  handler: async (ctx, args) => {
-    // First get the user by wallet address
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_walletAddress", (q) => q.eq("walletAddress", args.walletAddress))
-      .first();
-    
-    if (!user) {
-      return null;
-    }
-    
-    // Then get franchiser by user ID
-    return await ctx.db
-      .query("franchiser")
-      .withIndex("by_ownerUser", (q) => q.eq("ownerUserId", user._id))
-      .first();
-  },
-});
-
-// Legacy query for backward compatibility - get all franchisers by wallet address
-export const getAllFranchisersByWallet = query({
-  args: { walletAddress: v.string() },
-  handler: async (ctx, args) => {
-    // First get the user by wallet address
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_walletAddress", (q) => q.eq("walletAddress", args.walletAddress))
-      .first();
-    
-    if (!user) {
-      return [];
-    }
-    
-    // Then get franchisers by user ID
-    return await ctx.db
-      .query("franchiser")
-      .withIndex("by_ownerUser", (q) => q.eq("ownerUserId", user._id))
-      .collect();
-  },
-});
 
 // Query to get franchiser by slug
 export const getFranchiserBySlug = query({
@@ -122,7 +79,6 @@ export const getFranchiserProducts = query({
 export const createFranchiser = mutation({
   args: {
     ownerUserId: v.id("users"),
-    brandWalletAddress: v.string(),
     logoUrl: v.optional(v.id("_storage")),
     name: v.string(),
     slug: v.string(),
@@ -164,7 +120,6 @@ export const createFranchiserWithDetails = mutation({
   args: {
     franchiser: v.object({
       ownerUserId: v.id("users"),
-      brandWalletAddress: v.string(),
       logoUrl: v.optional(v.id("_storage")),
       name: v.string(),
       slug: v.string(),

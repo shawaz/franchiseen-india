@@ -27,13 +27,13 @@ export const getAllTeamMembers = query({
   },
 });
 
-// Get team member by wallet address
+// Get team member by email
 export const getTeamMemberByWallet = query({
   args: { walletAddress: v.string() },
-  handler: async (ctx, { walletAddress }) => {
+  handler: async (ctx, { walletAddress: email }) => {
     const user = await ctx.db
       .query("adminUsers")
-      .withIndex("by_walletAddress", (q) => q.eq("walletAddress", walletAddress))
+      .withIndex("by_email", (q) => q.eq("email", email))
       .first();
     
     if (!user) return null;
@@ -50,7 +50,6 @@ export const getTeamMemberByWallet = query({
 // Create admin user
 export const createAdminUser = mutation({
   args: {
-    walletAddress: v.string(),
     email: v.string(),
     name: v.string(),
     role: v.union(
@@ -60,18 +59,17 @@ export const createAdminUser = mutation({
       v.literal("member")
     ),
   },
-  handler: async (ctx, { walletAddress, email, name, role }) => {
+  handler: async (ctx, { email, name, role }) => {
     const existingUser = await ctx.db
       .query("adminUsers")
-      .withIndex("by_walletAddress", (q) => q.eq("walletAddress", walletAddress))
+      .withIndex("by_email", (q) => q.eq("email", email))
       .first();
-    
+
     if (existingUser) {
       throw new Error("User already exists");
     }
-    
+
     const userId = await ctx.db.insert("adminUsers", {
-      walletAddress,
       email,
       name,
       role,
@@ -186,7 +184,6 @@ export const removeTeamMember = mutation({
 // Create user and add to team in one step
 export const createUserAndAddToTeam = mutation({
   args: {
-    walletAddress: v.string(),
     email: v.string(),
     name: v.string(),
     role: v.union(
@@ -207,20 +204,19 @@ export const createUserAndAddToTeam = mutation({
     )),
     permissions: v.array(v.string()),
   },
-  handler: async (ctx, { walletAddress, email, name, role, departments, permissions }) => {
+  handler: async (ctx, { email, name, role, departments, permissions }) => {
     // Check if user already exists
     const existingUser = await ctx.db
       .query("adminUsers")
-      .withIndex("by_walletAddress", (q) => q.eq("walletAddress", walletAddress))
+      .withIndex("by_email", (q) => q.eq("email", email))
       .first();
-    
+
     if (existingUser) {
       throw new Error("User already exists");
     }
 
     // Create admin user
     const userId = await ctx.db.insert("adminUsers", {
-      walletAddress,
       email,
       name,
       role,

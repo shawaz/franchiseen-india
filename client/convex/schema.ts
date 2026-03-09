@@ -13,16 +13,12 @@ export default defineSchema({
     // Auth provider IDs
     privyUserId: v.optional(v.string()),
     clerkUserId: v.optional(v.string()),
-    
-    // Wallet information
-    walletAddress: v.optional(v.string()),
 
     // Timestamps
     createdAt: v.optional(v.number()),
     updatedAt: v.optional(v.number()),
   })
     .index('by_email', ['email'])
-    .index('by_walletAddress', ['walletAddress'])
     .index('by_privyUserId', ['privyUserId'])
     .index('by_clerkUserId', ['clerkUserId']),
 
@@ -37,7 +33,6 @@ export default defineSchema({
 
   franchiser: defineTable({
     ownerUserId: v.id('users'), // User's ID (who owns/manages the brand)
-    brandWalletAddress: v.string(), // Brand's wallet (for operations)
     logoUrl: v.optional(v.id('_storage')),
     name: v.string(),
     slug: v.string(),
@@ -73,8 +68,7 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   })
-    .index('by_ownerUser', ['ownerUserId'])
-    .index('by_brandWallet', ['brandWalletAddress']),
+    .index('by_ownerUser', ['ownerUserId']),
 
   franchiserLocations: defineTable({
     franchiserId: v.id('franchiser'),
@@ -196,7 +190,7 @@ export default defineSchema({
   // Franchise tables
   franchises: defineTable({
     franchiserId: v.id('franchiser'),
-    franchiseeId: v.string(), // Franchisee's wallet address
+    franchiseeId: v.string(), // Franchisee's user ID
     locationId: v.id('franchiserLocations'),
     franchiseSlug: v.string(), // e.g., "nike-01", "nike-02"
     businessName: v.string(),
@@ -278,112 +272,41 @@ export default defineSchema({
 
   franchiseShares: defineTable({
     franchiseId: v.id('franchises'),
-    investorId: v.string(), // Investor's wallet address
+    investorId: v.id('users'), // Investor's user ID
     sharesPurchased: v.number(),
-    sharePrice: v.number(),
-    totalAmount: v.number(),
-    transactionHash: v.optional(v.string()),
+    sharePrice: v.number(),        // price per share in INR
+    totalAmountInPaise: v.number(), // total paid in paise
+    razorpayOrderId: v.optional(v.string()),   // order_xxxx (escrow payment)
+    razorpayPaymentId: v.optional(v.string()), // pay_xxxx (confirmation)
     status: v.union(v.literal('pending'), v.literal('confirmed'), v.literal('failed'), v.literal('refunded')),
     purchasedAt: v.number(),
     refundedAt: v.optional(v.number()),
-    refundTransactionHash: v.optional(v.string()),
+    refundRazorpayId: v.optional(v.string()), // Razorpay refund ID
     createdAt: v.number(),
   })
     .index('by_franchise', ['franchiseId'])
     .index('by_investor', ['investorId'])
-    .index('by_status', ['status']),
+    .index('by_status', ['status'])
+    .index('by_razorpay_order', ['razorpayOrderId']),
 
-  // SPL Token Management for Franchise Shares
-  franchiseTokens: defineTable({
-    franchiseId: v.id('franchises'),
-    tokenMint: v.string(), // SPL token mint address
-    tokenName: v.string(), // e.g., "Nike Dubai Shares"
-    tokenSymbol: v.string(), // e.g., "NIKE-DXB"
-    tokenDecimals: v.number(), // Usually 6 for shares
-    totalSupply: v.number(), // Total tokens minted
-    circulatingSupply: v.number(), // Tokens in circulation
-    sharePrice: v.number(), // Price per token in USD
-    status: v.union(
-      v.literal('created'),
-      v.literal('active'),
-      v.literal('paused'),
-      v.literal('completed'),
-      v.literal('cancelled'),
-    ),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  })
-    .index('by_franchise', ['franchiseId'])
-    .index('by_token_mint', ['tokenMint'])
-    .index('by_status', ['status']),
-
-  // Token Holdings for Investors
-  tokenHoldings: defineTable({
-    franchiseId: v.id('franchises'),
-    tokenMint: v.string(), // SPL token mint address
-    investorId: v.string(), // Investor's wallet address
-    balance: v.number(), // Current token balance
-    totalPurchased: v.number(), // Total tokens ever purchased
-    totalSold: v.number(), // Total tokens ever sold
-    averagePurchasePrice: v.number(), // Average price paid per token
-    lastTransactionAt: v.number(),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  })
-    .index('by_franchise', ['franchiseId'])
-    .index('by_investor', ['investorId'])
-    .index('by_token_mint', ['tokenMint'])
-    .index('by_franchise_investor', ['franchiseId', 'investorId']),
-
-  // Token Transactions (mint, burn, transfer)
-  tokenTransactions: defineTable({
-    franchiseId: v.id('franchises'),
-    tokenMint: v.string(),
-    fromInvestorId: v.optional(v.string()), // null for minting
-    toInvestorId: v.optional(v.string()), // null for burning
-    amount: v.number(),
-    transactionType: v.union(
-      v.literal('mint'), // New tokens created
-      v.literal('burn'), // Tokens destroyed (refunds)
-      v.literal('transfer'), // Tokens moved between wallets
-      v.literal('purchase'), // Tokens purchased with fiat/crypto
-      v.literal('sale'), // Tokens sold
-    ),
-    pricePerToken: v.optional(v.number()), // Price at time of transaction
-    totalValue: v.optional(v.number()), // amount × pricePerToken
-    transactionHash: v.optional(v.string()),
-    status: v.union(v.literal('pending'), v.literal('confirmed'), v.literal('failed')),
-    createdAt: v.number(),
-  })
-    .index('by_franchise', ['franchiseId'])
-    .index('by_token_mint', ['tokenMint'])
-    .index('by_investor', ['toInvestorId'])
-    .index('by_type', ['transactionType'])
-    .index('by_status', ['status']),
-
-  // Franchise Wallets - Each franchise gets its own Solana wallet
+  // Franchise Wallets — INR ledger for each franchise (operational account)
   franchiseWallets: defineTable({
     franchiseId: v.id('franchises'),
-    walletAddress: v.string(), // Solana wallet address (public key)
-    walletSecretKey: v.optional(v.string()), // Encrypted secret key for signing transactions
     walletName: v.string(), // e.g., "Nike Dubai Franchise Wallet"
-    balance: v.number(), // Current balance
-    usdBalance: v.optional(v.number()), // Legacy USD balance field
-    inrBalance: v.optional(v.number()), // INR balance (optional for legacy records)
-    totalIncome: v.number(), // Total income received
-    totalExpenses: v.number(), // Total expenses paid
-    totalPayouts: v.number(), // Total payouts to investors
-    totalRoyalties: v.number(), // Total royalties paid to brand
-    monthlyRevenue: v.number(), // Current month revenue
-    monthlyExpenses: v.number(), // Current month expenses
-    transactionCount: v.number(), // Total number of transactions
-    lastActivity: v.number(), // Timestamp of last activity
+    balanceInPaise: v.number(), // Current balance in paise (INR × 100)
+    totalIncome: v.number(), // All-time total income in paise
+    totalExpenses: v.number(), // All-time total expenses in paise
+    totalPayouts: v.number(), // All-time total payouts to investors in paise
+    totalRoyalties: v.number(), // All-time royalties paid to brand in paise
+    monthlyRevenue: v.number(), // Current month revenue in paise
+    monthlyExpenses: v.number(), // Current month expenses in paise
+    transactionCount: v.number(),
+    lastActivity: v.number(),
     status: v.union(v.literal('active'), v.literal('inactive'), v.literal('suspended'), v.literal('maintenance')),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index('by_franchise', ['franchiseId'])
-    .index('by_wallet_address', ['walletAddress'])
     .index('by_status', ['status']),
 
   // Franchise Wallet Transactions
@@ -391,22 +314,19 @@ export default defineSchema({
     franchiseWalletId: v.id('franchiseWallets'),
     franchiseId: v.id('franchises'),
     transactionType: v.union(
-      v.literal('income'), // Revenue from sales
-      v.literal('expense'), // Operational expenses
-      v.literal('payout'), // Payout to investors
-      v.literal('royalty'), // Royalty payment to brand
-      v.literal('transfer_in'), // Transfer from brand wallet
-      v.literal('transfer_out'), // Transfer to brand wallet
-      v.literal('funding'), // Initial funding
-      v.literal('refund'), // Refund to investor
+      v.literal('income'),       // Revenue from in-store sales
+      v.literal('expense'),      // Operational expenses
+      v.literal('payout'),       // Payout to investors
+      v.literal('royalty'),      // Royalty payment to brand
+      v.literal('transfer_in'),  // Escrow release / working capital arrival
+      v.literal('transfer_out'), // Transfer to brand/platform
+      v.literal('funding'),      // Initial funding from escrow release
+      v.literal('refund'),       // Refund to investor
     ),
-    amount: v.number(), // Amount in SOL
-    inrAmount: v.number(), // USD equivalent at time of transaction
+    amountInPaise: v.number(), // Amount in paise (always positive)
     description: v.string(),
     category: v.optional(v.string()), // e.g., "rent", "utilities", "inventory"
-    transactionHash: v.string(), // Solana transaction hash for explorer
-    fromAddress: v.optional(v.string()), // Source wallet address
-    toAddress: v.optional(v.string()), // Destination wallet address
+    razorpayPaymentId: v.optional(v.string()), // pay_xxxx or pout_xxxx reference
     status: v.union(v.literal('pending'), v.literal('confirmed'), v.literal('failed')),
     metadata: v.optional(
       v.object({
@@ -420,12 +340,33 @@ export default defineSchema({
     .index('by_franchise_wallet', ['franchiseWalletId'])
     .index('by_franchise', ['franchiseId'])
     .index('by_type', ['transactionType'])
-    .index('by_status', ['status'])
-    .index('by_transaction_hash', ['transactionHash']),
+    .index('by_status', ['status']),
+
+  // Fundraising Escrow — tracks per-franchise crowdfunding status
+  franchiseEscrow: defineTable({
+    franchiseId: v.id('franchises'),
+    investmentId: v.id('investments'),
+    targetAmountInPaise: v.number(), // Total funding needed
+    collectedInPaise: v.number(),    // Amount collected so far
+    investorCount: v.number(),
+    deadline: v.number(),            // Funding deadline timestamp
+    status: v.union(
+      v.literal('collecting'),  // Accepting investor payments
+      v.literal('funded'),      // Target reached, ready to release
+      v.literal('released'),    // Funds released to franchise account
+      v.literal('refunded'),    // Funding failed, all investors refunded
+    ),
+    releasedAt: v.optional(v.number()),
+    refundedAt: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index('by_franchise', ['franchiseId'])
+    .index('by_status', ['status']),
 
   invoices: defineTable({
     franchiseId: v.id('franchises'),
-    investorId: v.string(), // Investor's wallet address
+    investorId: v.string(), // Investor's user ID
     invoiceNumber: v.string(),
     amount: v.number(),
     currency: v.string(),
@@ -458,7 +399,6 @@ export default defineSchema({
 
   // Admin Users Management
   adminUsers: defineTable({
-    walletAddress: v.string(),
     email: v.string(),
     name: v.string(),
     avatar: v.optional(v.id('_storage')),
@@ -467,7 +407,7 @@ export default defineSchema({
     lastLoginAt: v.optional(v.number()),
     createdAt: v.number(),
     updatedAt: v.number(),
-  }).index('by_walletAddress', ['walletAddress']),
+  }).index('by_email', ['email']),
 
   // Team Management with Department Access
   adminTeam: defineTable({
@@ -795,21 +735,21 @@ export default defineSchema({
   franchisePayouts: defineTable({
     franchiseId: v.id('franchises'),
     franchiserId: v.id('franchiser'),
-    period: v.string(), // e.g., "2024-10-08" or "October 2024"
+    period: v.string(), // e.g., "2024-03" (YYYY-MM)
     payoutType: v.union(v.literal('daily'), v.literal('monthly')),
-    grossRevenue: v.number(), // Total revenue before any deductions
-    royaltyAmount: v.number(), // Amount to brand wallet
-    platformFeeAmount: v.number(), // Amount to platform
-    netRevenue: v.number(), // After royalty and platform fee
-    toTokenHolders: v.number(), // Amount distributed to token holders
-    toReserve: v.number(), // Amount added to reserve fund
-    reserveBalanceBefore: v.number(), // Reserve balance before payout
-    reserveBalanceAfter: v.number(), // Reserve balance after payout
-    reservePercentage: v.number(), // Reserve % at time of payout
-    distributionRule: v.string(), // e.g., "Critical Reserve (< 25%)"
-    totalShares: v.number(), // Total shares at time of payout
-    shareholderCount: v.number(), // Number of shareholders
-    status: v.union(v.literal('pending'), v.literal('processing'), v.literal('completed'), v.literal('failed')),
+    grossRevenue: v.number(),      // Total revenue in paise
+    royaltyAmount: v.number(),     // Amount to franchisor in paise
+    platformFeeAmount: v.number(), // Amount to platform in paise
+    netRevenue: v.number(),        // After royalty and platform fee
+    toInvestors: v.number(),       // Amount distributed to investors in paise
+    toReserve: v.number(),         // Amount added to reserve in paise
+    reserveBalanceBefore: v.number(),
+    reserveBalanceAfter: v.number(),
+    reservePercentage: v.number(),
+    distributionRule: v.string(),  // e.g., "Critical Reserve (< 25%)"
+    totalShares: v.number(),
+    investorCount: v.number(),
+    status: v.union(v.literal('pending'), v.literal('processing'), v.literal('queued'), v.literal('completed'), v.literal('failed')),
     processedAt: v.optional(v.number()),
     completedAt: v.optional(v.number()),
     createdAt: v.number(),
@@ -818,17 +758,18 @@ export default defineSchema({
     .index('by_franchiser', ['franchiserId'])
     .index('by_status', ['status']),
 
-  // Shareholder Payouts (new implementation)
+  // Individual investor payout records (linked to franchisePayouts)
   shareholderPayouts: defineTable({
     payoutId: v.id('franchisePayouts'),
     franchiseId: v.id('franchises'),
-    investorId: v.string(), // Wallet address
-    shares: v.number(), // Number of shares held
-    totalShares: v.number(), // Total shares at time of payout
-    sharePercentage: v.number(), // Percentage of total shares
-    payoutAmount: v.number(), // Amount paid out
-    period: v.string(), // Same as payout period
-    status: v.union(v.literal('pending'), v.literal('completed'), v.literal('failed')),
+    investorId: v.id('users'),
+    shares: v.number(),
+    totalShares: v.number(),
+    sharePercentage: v.number(),
+    payoutAmountInPaise: v.number(),
+    period: v.string(),
+    razorpayPayoutId: v.optional(v.string()), // pout_xxxx once queued
+    status: v.union(v.literal('queued'), v.literal('processing'), v.literal('completed'), v.literal('failed')),
     createdAt: v.number(),
   })
     .index('by_payout', ['payoutId'])
@@ -1052,9 +993,10 @@ export default defineSchema({
       v.literal('franchise_fee'),          // Phase 1: initial franchise fee
       v.literal('setup_cost'),             // Phase 1: setup/fit-out cost
       v.literal('working_capital'),        // Phase 1: working capital deposit
+      v.literal('escrow_funding'),         // Phase 2: investor fundraising escrow
       v.literal('platform_subscription'),  // SaaS listing fee
       v.literal('platform_wallet_load'),   // Top-up platform wallet
-      v.literal('in_store'),              // Phase 3: in-store customer payment
+      v.literal('in_store'),               // Phase 3: in-store customer payment
     ),
     amountInPaise: v.number(),             // INR × 100  (e.g. ₹50,000 = 5000000)
     currency: v.literal('INR'),
@@ -1096,10 +1038,12 @@ export default defineSchema({
     linkedFranchisePayoutId: v.optional(v.id('franchisePayouts')), // ties to existing payout record
     // Payout details
     type: v.union(
-      v.literal('royalty'),    // monthly royalty to franchisor
-      v.literal('dividend'),   // monthly dividend to investor
-      v.literal('refund'),     // refund to franchisee
-      v.literal('platform_fee'), // internal platform fee credit
+      v.literal('royalty'),          // monthly royalty to franchisor
+      v.literal('dividend'),         // monthly dividend to investor
+      v.literal('staff_salary'),     // monthly salary to franchise staff
+      v.literal('vendor_payment'),   // payment to vendor/supplier
+      v.literal('refund'),           // refund to franchisee
+      v.literal('platform_fee'),     // internal platform fee credit
     ),
     amountInPaise: v.number(),
     currency: v.literal('INR'),

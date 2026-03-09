@@ -64,6 +64,18 @@ export async function POST(req: NextRequest) {
         console.log('[Razorpay Webhook] Wallet credited:', payment.id)
       }
 
+      // If this was an escrow funding contribution, record it
+      if (order?.type === 'escrow_funding' && order.franchiseId) {
+        await convex.mutation(api.razorpayManagement.recordEscrowContribution, {
+          franchiseId: order.franchiseId,
+          investorId: order.payerId,
+          razorpayOrderId: payment.order_id,
+          razorpayPaymentId: payment.id,
+          amountInPaise: order.amountInPaise,
+        })
+        console.log('[Razorpay Webhook] Escrow contribution recorded:', payment.id)
+      }
+
       console.log('[Razorpay Webhook] Payment captured:', payment.id)
     }
 

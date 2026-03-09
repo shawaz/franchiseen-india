@@ -513,14 +513,14 @@ export const seedAllData = mutation({
 export const seedSuperAdmin = mutation({
   args: {},
   handler: async (ctx) => {
-    const superAdminWallet = "AWKkqeEFHsC8LqPcYAf1ivWkAwji2zZmiPWvpXacCNtn";
-    
+    const superAdminEmail = "admin@franchiseen.com";
+
     // Check if super admin already exists
     const existingAdmin = await ctx.db
       .query("adminUsers")
-      .withIndex("by_walletAddress", (q) => q.eq("walletAddress", superAdminWallet))
+      .withIndex("by_email", (q) => q.eq("email", superAdminEmail))
       .first();
-    
+
     if (existingAdmin) {
       console.log("Super admin already exists");
       return existingAdmin._id;
@@ -528,8 +528,7 @@ export const seedSuperAdmin = mutation({
 
     // Create super admin user
     const adminUserId = await ctx.db.insert("adminUsers", {
-      walletAddress: superAdminWallet,
-      email: "admin@franchiseen.com",
+      email: superAdminEmail,
       name: "Super Admin",
       role: "super_admin",
       status: "active",
