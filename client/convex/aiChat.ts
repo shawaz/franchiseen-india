@@ -22,7 +22,7 @@ export const getUserContext = internalQuery({
   handler: async (ctx, { userId }) => {
     const adminUser = await ctx.db
       .query("adminUsers")
-      .withIndex("by_walletAddress", (q) => q.eq("walletAddress", userId))
+      .withIndex("by_email", (q) => q.eq("email", userId))
       .first();
 
     if (adminUser) {
@@ -44,7 +44,7 @@ export const getUserContext = internalQuery({
 
     const user = await ctx.db
       .query("users")
-      .withIndex("by_walletAddress", (q) => q.eq("walletAddress", userId))
+      .withIndex("by_email", (q) => q.eq("email", userId))
       .first();
 
     if (user) {

@@ -310,6 +310,248 @@ export const getPayoutsByPeriod = query({
   },
 })
 
+// ─── FUNDRAISING ESCROW ──────────────────────────────────────────────────────
+
+/**
+ * Initialise a franchise escrow account.
+ * Called when a franchise enters the 'funding' stage.
+ */
+export const initFranchiseEscrow = mutation({
+  args: {
+    franchiseId: v.id('franchises'),
+    investmentId: v.id('investments'),
+    targetAmountInPaise: v.number(),
+    deadline: v.number(), // Unix timestamp
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query('franchiseEscrow')
+      .withIndex('by_franchise', (q) => q.eq('franchiseId', args.franchiseId))
+      .first()
+
+    if (existing) return existing._id
+
+    return await ctx.db.insert('franchiseEscrow', {
+      franchiseId: args.franchiseId,
+      investmentId: args.investmentId,
+      targetAmountInPaise: args.targetAmountInPaise,
+      collectedInPaise: 0,
+      investorCount: 0,
+      deadline: args.deadline,
+      status: 'collecting',
+      createdAt: nowMs(),
+      updatedAt: nowMs(),
+    })
+  },
+})
+
+/** Called after an escrow_funding order is paid — credit escrow + create share record. */
+export const recordEscrowContribution = mutation({
+  args: {
+    franchiseId: v.id('franchises'),
+    investorId: v.id('users'),
+    amountInPaise: v.number(),
+    sharesPurchased: v.number(),
+    sharePrice: v.number(),
+    razorpayOrderId: v.string(),
+    razorpayPaymentId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const now = nowMs()
+
+    const escrow = await ctx.db
+      .query('franchiseEscrow')
+      .withIndex('by_franchise', (q) => q.eq('franchiseId', args.franchiseId))
+      .first()
+
+    if (!escrow) throw new Error('Escrow not initialised for this franchise')
+    if (escrow.status !== 'collecting') throw new Error(`Escrow is ${escrow.status}, not accepting contributions`)
+
+    // Check for duplicate (idempotency on razorpayOrderId)
+    const existing = await ctx.db
+      .query('franchiseShares')
+      .withIndex('by_razorpay_order', (q) => q.eq('razorpayOrderId', args.razorpayOrderId))
+      .first()
+
+    if (existing) return { shareId: existing._id, alreadyProcessed: true }
+
+    const shareId = await ctx.db.insert('franchiseShares', {
+      franchiseId: args.franchiseId,
+      investorId: args.investorId,
+      sharesPurchased: args.sharesPurchased,
+      sharePrice: args.sharePrice,
+      totalAmountInPaise: args.amountInPaise,
+      razorpayOrderId: args.razorpayOrderId,
+      razorpayPaymentId: args.razorpayPaymentId,
+      status: 'confirmed',
+      purchasedAt: now,
+      createdAt: now,
+    })
+
+    const newCollected = escrow.collectedInPaise + args.amountInPaise
+    const newInvestorCount = escrow.investorCount + 1
+    const isFunded = newCollected >= escrow.targetAmountInPaise
+
+    await ctx.db.patch(escrow._id, {
+      collectedInPaise: newCollected,
+      investorCount: newInvestorCount,
+      status: isFunded ? 'funded' : 'collecting',
+      updatedAt: now,
+    })
+
+    // Also update the investments table
+    const investment = await ctx.db.get(escrow.investmentId)
+    if (investment) {
+      await ctx.db.patch(investment._id, {
+        totalInvested: (investment.totalInvested ?? 0) + args.amountInPaise / 100,
+        sharesPurchased: (investment.sharesPurchased ?? 0) + args.sharesPurchased,
+        updatedAt: now,
+      })
+    }
+
+    return { shareId, alreadyProcessed: false, escrowFunded: isFunded }
+  },
+})
+
+/**
+ * Admin releases escrow funds to the franchise operational wallet.
+ * Call after KYC + property setup are complete and funding target is met.
+ */
+export const releaseEscrowToFranchise = mutation({
+  args: {
+    franchiseId: v.id('franchises'),
+    adminNote: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const now = nowMs()
+
+    const escrow = await ctx.db
+      .query('franchiseEscrow')
+      .withIndex('by_franchise', (q) => q.eq('franchiseId', args.franchiseId))
+      .first()
+
+    if (!escrow) throw new Error('Escrow not found')
+    if (escrow.status !== 'funded' && escrow.status !== 'collecting') {
+      throw new Error(`Cannot release escrow in status: ${escrow.status}`)
+    }
+
+    // Credit franchise wallet with collected amount
+    const wallet = await ctx.db
+      .query('franchiseWallets')
+      .withIndex('by_franchise', (q) => q.eq('franchiseId', args.franchiseId))
+      .first()
+
+    if (!wallet) throw new Error('Franchise wallet not found — create it first')
+
+    await ctx.db.patch(wallet._id, {
+      balanceInPaise: wallet.balanceInPaise + escrow.collectedInPaise,
+      totalIncome: wallet.totalIncome + escrow.collectedInPaise,
+      lastActivity: now,
+      updatedAt: now,
+    })
+
+    await ctx.db.insert('franchiseWalletTransactions', {
+      franchiseWalletId: wallet._id,
+      franchiseId: args.franchiseId,
+      transactionType: 'funding',
+      amountInPaise: escrow.collectedInPaise,
+      description: `Escrow release — ${escrow.investorCount} investors${args.adminNote ? ` — ${args.adminNote}` : ''}`,
+      status: 'confirmed',
+      createdAt: now,
+    })
+
+    await ctx.db.patch(escrow._id, {
+      status: 'released',
+      releasedAt: now,
+      updatedAt: now,
+    })
+
+    return {
+      success: true,
+      releasedAmountInPaise: escrow.collectedInPaise,
+      investorCount: escrow.investorCount,
+    }
+  },
+})
+
+/**
+ * Admin refunds all investors when funding fails (deadline passed without reaching target).
+ * Creates individual refund records; actual Razorpay refund calls happen via API route.
+ */
+export const refundFailedEscrow = mutation({
+  args: {
+    franchiseId: v.id('franchises'),
+    reason: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const now = nowMs()
+
+    const escrow = await ctx.db
+      .query('franchiseEscrow')
+      .withIndex('by_franchise', (q) => q.eq('franchiseId', args.franchiseId))
+      .first()
+
+    if (!escrow) throw new Error('Escrow not found')
+    if (escrow.status === 'released') throw new Error('Escrow already released — cannot refund')
+    if (escrow.status === 'refunded') throw new Error('Already refunded')
+
+    // Mark all confirmed shares as refunded
+    const shares = await ctx.db
+      .query('franchiseShares')
+      .withIndex('by_franchise', (q) => q.eq('franchiseId', args.franchiseId))
+      .filter((q) => q.eq(q.field('status'), 'confirmed'))
+      .collect()
+
+    for (const share of shares) {
+      await ctx.db.patch(share._id, {
+        status: 'refunded',
+        refundedAt: now,
+      })
+
+      // Queue Razorpay refund payout
+      const account = await ctx.db
+        .query('razorpayAccounts')
+        .withIndex('by_user', (q) => q.eq('userId', share.investorId))
+        .filter((q) => q.eq(q.field('status'), 'active'))
+        .first()
+
+      if (account?.razorpayFundAccountId) {
+        await ctx.db.insert('razorpayPayouts', {
+          recipientId: share.investorId,
+          franchiseId: args.franchiseId,
+          type: 'refund',
+          amountInPaise: share.totalAmountInPaise,
+          currency: 'INR',
+          narration: `Escrow refund — ${args.reason.slice(0, 20)}`,
+          fundAccountId: account.razorpayFundAccountId,
+          period: new Date().toISOString().slice(0, 7),
+          status: 'queued',
+          createdAt: now,
+          updatedAt: now,
+        })
+      }
+    }
+
+    await ctx.db.patch(escrow._id, {
+      status: 'refunded',
+      refundedAt: now,
+      updatedAt: now,
+    })
+
+    return { success: true, refundedCount: shares.length }
+  },
+})
+
+export const getEscrowStatus = query({
+  args: { franchiseId: v.id('franchises') },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query('franchiseEscrow')
+      .withIndex('by_franchise', (q) => q.eq('franchiseId', args.franchiseId))
+      .first()
+  },
+})
+
 // ─── IN-STORE PAYMENTS ───────────────────────────────────────────────────────
 
 /** Save in-store payment record */

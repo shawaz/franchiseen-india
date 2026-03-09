@@ -1,6 +1,5 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { api } from "./_generated/api";
 
 // Create a new franchise
 export const createFranchise = mutation({
@@ -207,16 +206,11 @@ export const checkAndTransitionFranchiseStage = mutation({
       let walletCreated = false;
       let walletCreationError = null;
       try {
-        // Generate wallet address
-        const walletAddress = `franchise_wallet_${args.franchiseId}_${now}`;
-        
         // Create the franchise wallet record
         const walletId = await ctx.db.insert("franchiseWallets", {
           franchiseId: args.franchiseId,
-          walletAddress: walletAddress,
           walletName: `${franchise.businessName} Wallet`,
-          balance: 0, // Start with 0 SOL balance
-          inrBalance: investment.workingCapital, // Working capital in USD
+          balanceInPaise: Math.round(investment.workingCapital * 100),
           totalIncome: 0,
           totalExpenses: 0,
           totalPayouts: 0,
@@ -652,7 +646,11 @@ export const purchaseShares = mutation({
 
     // Insert the share purchase record
     const shareId = await ctx.db.insert("franchiseShares", {
-      ...args,
+      franchiseId: args.franchiseId,
+      investorId: args.investorId as any, // string investor ID
+      sharesPurchased: args.sharesPurchased,
+      sharePrice: args.sharePrice,
+      totalAmountInPaise: Math.round(args.totalAmount * 100),
       status: "confirmed",
       purchasedAt: now,
       createdAt: now,
@@ -701,10 +699,10 @@ export const purchaseShares = mutation({
         .first();
 
       if (franchiseWallet) {
-        // Update franchise wallet balance with only working capital
+        const workingCapitalInPaise = Math.round(workingCapital * 100);
+        // Update franchise wallet balance with working capital
         await ctx.db.patch(franchiseWallet._id, {
-          balance: workingCapital / 200, // Convert USD to SOL (assuming $200 per SOL)
-          inrBalance: workingCapital,
+          balanceInPaise: (franchiseWallet.balanceInPaise ?? 0) + workingCapitalInPaise,
           updatedAt: now,
         });
 
@@ -713,10 +711,8 @@ export const purchaseShares = mutation({
           franchiseWalletId: franchiseWallet._id,
           franchiseId: args.franchiseId,
           transactionType: "funding",
-          amount: workingCapital / 200, // Convert USD to SOL (assuming $200 per SOL)
-          inrAmount: workingCapital,
-          description: `Working capital transferred to franchise wallet: $${workingCapital.toLocaleString()}`,
-          transactionHash: `working_capital_${args.franchiseId}_${now}`,
+          amountInPaise: workingCapitalInPaise,
+          description: `Working capital transferred to franchise wallet: ₹${workingCapital.toLocaleString()}`,
           status: "confirmed",
           createdAt: now,
         });
@@ -803,11 +799,11 @@ export const purchaseSharesBySlug = mutation({
     // Insert the share purchase record
     const shareId = await ctx.db.insert("franchiseShares", {
       franchiseId: franchise._id,
-      investorId: args.investorId,
+      investorId: args.investorId as any, // string investor ID
       sharesPurchased: args.sharesPurchased,
       sharePrice: args.sharePrice,
-      totalAmount: args.totalAmount,
-      transactionHash: args.transactionHash,
+      totalAmountInPaise: Math.round(args.totalAmount * 100),
+      razorpayOrderId: args.transactionHash, // repurpose transactionHash as order ID reference
       status: "confirmed",
       purchasedAt: now,
       createdAt: now,
@@ -821,45 +817,29 @@ export const purchaseSharesBySlug = mutation({
       .first();
 
     if (franchiseWallet) {
-      const newBalance = franchiseWallet.inrBalance + args.totalAmount;
+      const totalAmountInPaise = Math.round(args.totalAmount * 100);
+      const newBalanceInPaise = (franchiseWallet.balanceInPaise ?? 0) + totalAmountInPaise;
       await ctx.db.patch(franchiseWallet._id, {
-        inrBalance: newBalance,
-        balance: newBalance / 200, // Convert to SOL
-        totalIncome: franchiseWallet.totalIncome + args.totalAmount,
+        balanceInPaise: newBalanceInPaise,
+        totalIncome: franchiseWallet.totalIncome + totalAmountInPaise,
         lastActivity: now,
         updatedAt: now,
       });
-      
+
       // Record the transaction
       await ctx.db.insert("franchiseWalletTransactions", {
         franchiseWalletId: franchiseWallet._id,
         franchiseId: franchise._id,
         transactionType: "funding",
-        amount: args.totalAmount / 200, // SOL
-        inrAmount: args.totalAmount,
-        description: `Share purchase: ${args.sharesPurchased} shares @ $${args.sharePrice} = $${args.totalAmount.toLocaleString()}`,
-        transactionHash: args.transactionHash || `share_purchase_${shareId}_${now}`,
+        amountInPaise: totalAmountInPaise,
+        description: `Share purchase: ${args.sharesPurchased} shares @ ₹${args.sharePrice} = ₹${args.totalAmount.toLocaleString()}`,
         status: "confirmed",
         createdAt: now,
       });
-      
-      console.log(`✅ Added $${args.totalAmount.toLocaleString()} to franchise wallet. New balance: $${newBalance.toLocaleString()}`);
+
+      console.log(`✅ Added ₹${args.totalAmount.toLocaleString()} to franchise wallet. New balance in paise: ${newBalanceInPaise}`);
     } else {
       console.error(`⚠️ No franchise wallet found for ${args.franchiseSlug}. Funds not added to wallet.`);
-    }
-
-    // Mint tokens for the share purchase
-    try {
-      await ctx.runMutation(api.tokenManagement.mintTokensForPurchase, {
-        franchiseId: franchise._id,
-        investorId: args.investorId,
-        amount: args.sharesPurchased, // 1 share = 1 token
-        totalValue: args.totalAmount,
-        transactionHash: args.transactionHash,
-      });
-    } catch (error) {
-      console.error("Failed to mint tokens:", error);
-      // Continue with share purchase even if token minting fails
     }
 
     // Update the investment record with new totals
@@ -938,15 +918,14 @@ export const purchaseSharesBySlug = mutation({
         console.log(`✅ Setup cost transferred to brand: $${setupCost.toLocaleString()}`);
 
         // Deduct franchise fee and setup cost from franchise wallet (they go to brand)
-        const newFranchiseBalance = franchiseWallet.inrBalance - franchiseFee - setupCost;
+        const deductInPaise = Math.round((franchiseFee + setupCost) * 100);
+        const newBalanceInPaise = (franchiseWallet.balanceInPaise ?? 0) - deductInPaise;
         await ctx.db.patch(franchiseWallet._id, {
-          inrBalance: newFranchiseBalance,
-          balance: newFranchiseBalance / 200,
+          balanceInPaise: newBalanceInPaise,
           updatedAt: now,
         });
-        
-        console.log(`💵 Franchise wallet adjusted: $${franchiseWallet.inrBalance.toLocaleString()} → $${newFranchiseBalance.toLocaleString()}`);
-        console.log(`💰 Working capital remaining in franchise wallet: $${newFranchiseBalance.toLocaleString()}`);
+
+        console.log(`💵 Franchise wallet adjusted: ${franchiseWallet.balanceInPaise} → ${newBalanceInPaise} paise`);
         
         // Create setup entry
         const launchDate = now + (45 * 24 * 60 * 60 * 1000);
@@ -1008,17 +987,11 @@ export const createFundingPDA = mutation({
       throw new Error("Can only create funding PDA during funding stage");
     }
 
-    // Generate a unique wallet identifier (Solana removed — using UUID)
-    const pdaAddress = `wallet_${crypto.randomUUID()}`;
-
-    // Create a funding PDA entry (acts as escrow)
+    // Create a funding PDA entry (acts as escrow tracker)
     const walletId = await ctx.db.insert("franchiseWallets", {
       franchiseId: args.franchiseId,
-      walletAddress: pdaAddress,
-      walletSecretKey: '',
       walletName: `${franchise.franchiseSlug} Funding PDA`,
-      balance: 0, // Starts with 0, accumulates as investments come in
-      inrBalance: 0,
+      balanceInPaise: 0,
       totalIncome: 0,
       totalExpenses: 0,
       totalPayouts: 0,
@@ -1053,7 +1026,6 @@ export const createFundingPDA = mutation({
 
     return {
       walletId,
-      pdaAddress,
       message: `Funding PDA created as escrow for franchise ${franchise.franchiseSlug}`,
       explorerUrl: null,
     };
@@ -1076,7 +1048,6 @@ export const createFranchiseWallet = mutation({
     const fundingPDA = await ctx.db
       .query("franchiseWallets")
       .withIndex("by_franchise", (q) => q.eq("franchiseId", args.franchiseId))
-      .filter((q) => q.eq(q.field("walletAddress"), q.field("walletAddress")))
       .first();
 
     if (!fundingPDA) {
@@ -1086,10 +1057,8 @@ export const createFranchiseWallet = mutation({
     // Create the actual franchise wallet
     const franchiseWalletId = await ctx.db.insert("franchiseWallets", {
       franchiseId: args.franchiseId,
-      walletAddress: `franchise_${args.franchiseId}_${Date.now()}`, // Actual franchise wallet address
       walletName: `${franchise.franchiseSlug} Wallet`,
-      balance: args.totalInvestment,
-      inrBalance: args.totalInvestment,
+      balanceInPaise: Math.round(args.totalInvestment * 100),
       totalIncome: 0,
       totalExpenses: 0,
       totalPayouts: 0,
@@ -1221,17 +1190,11 @@ export const transitionToLaunchingStage = mutation({
 
     console.log(`💰 Creating franchise wallet with working capital: $${workingCapital.toLocaleString()}`);
     
-    // Generate a unique wallet identifier (Solana removed — using UUID)
-    const walletAddress = `wallet_${crypto.randomUUID()}`;
-
     // Create the actual franchise wallet with only working capital
     const franchiseWalletId = await ctx.db.insert("franchiseWallets", {
       franchiseId: args.franchiseId,
-      walletAddress,
-      walletSecretKey: '',
       walletName: `${franchise.franchiseSlug} Wallet`,
-      balance: workingCapital / 200, // Convert USD to SOL (assuming $200 per SOL)
-      inrBalance: workingCapital,
+      balanceInPaise: Math.round(workingCapital * 100),
       totalIncome: 0,
       totalExpenses: 0,
       totalPayouts: 0,
@@ -1256,10 +1219,8 @@ export const transitionToLaunchingStage = mutation({
       franchiseWalletId: franchiseWalletId,
       franchiseId: args.franchiseId,
       transactionType: "funding",
-      amount: workingCapital / 200, // Convert USD to SOL (assuming $200 per SOL)
-      inrAmount: workingCapital,
-      description: `Working capital transferred to franchise wallet: $${workingCapital.toLocaleString()}`,
-      transactionHash: `pending_working_capital_${args.franchiseId}_${Date.now()}`,
+      amountInPaise: Math.round(workingCapital * 100),
+      description: `Working capital transferred to franchise wallet: ₹${workingCapital.toLocaleString()}`,
       status: "confirmed",
       createdAt: Date.now(),
     });
@@ -1278,60 +1239,33 @@ export const transitionToLaunchingStage = mutation({
       throw new Error("Franchiser not found");
     }
 
-    console.log(`💵 Creating brand wallet transaction for franchise fee: $${franchiseFee.toLocaleString()}`);
-    
-    // Schedule on-chain transfer for franchise fee (if keys available)
-    if (fundingPDA?.walletSecretKey && franchiser.brandWalletAddress) {
-      console.log(`📅 Scheduling on-chain transfer for franchise fee...`);
-      ctx.scheduler.runAfter(0, api.solanaTransactions.executeSolanaTransfer, {
-        fromPublicKey: fundingPDA.walletAddress,
-        fromSecretKey: fundingPDA.walletSecretKey,
-        toPublicKey: franchiser.brandWalletAddress,
-        amountSOL: franchiseFee / 150,
-        description: `Franchise fee from ${franchise.franchiseSlug}`,
-      });
-    }
-    
-    // Transfer franchise fee to brand wallet (database record)
+    console.log(`💵 Creating brand wallet transaction for franchise fee: ₹${franchiseFee.toLocaleString()}`);
+
+    // Record franchise fee in brand wallet (transferred via Razorpay, already captured)
     const franchiseFeeTransactionId = await ctx.db.insert("brandWalletTransactions", {
       franchiserId: franchise.franchiserId,
       franchiseId: args.franchiseId,
       type: "franchise_fee",
       amount: franchiseFee,
-      description: `Franchise fee received from ${franchise.franchiseSlug}: $${franchiseFee.toLocaleString()}`,
+      description: `Franchise fee received from ${franchise.franchiseSlug}: ₹${franchiseFee.toLocaleString()}`,
       status: "completed",
-      transactionHash: `pending_fee_${args.franchiseId}_${Date.now()}`,
       createdAt: Date.now(),
     });
-    
+
     console.log(`✅ Franchise fee transaction created:`, franchiseFeeTransactionId);
-    
-    console.log(`💵 Creating brand wallet transaction for setup cost: $${setupCost.toLocaleString()}`);
+    console.log(`💵 Creating brand wallet transaction for setup cost: ₹${setupCost.toLocaleString()}`);
 
-    // Schedule on-chain transfer for setup cost (if keys available)
-    if (fundingPDA?.walletSecretKey && franchiser.brandWalletAddress) {
-      console.log(`📅 Scheduling on-chain transfer for setup cost...`);
-      ctx.scheduler.runAfter(1000, api.solanaTransactions.executeSolanaTransfer, {
-        fromPublicKey: fundingPDA.walletAddress,
-        fromSecretKey: fundingPDA.walletSecretKey,
-        toPublicKey: franchiser.brandWalletAddress,
-        amountSOL: setupCost / 150,
-        description: `Setup cost from ${franchise.franchiseSlug}`,
-      });
-    }
-
-    // Transfer setup cost to brand wallet (database record)
+    // Record setup cost in brand wallet
     const setupCostTransactionId = await ctx.db.insert("brandWalletTransactions", {
       franchiserId: franchise.franchiserId,
       franchiseId: args.franchiseId,
       type: "setup_cost",
       amount: setupCost,
-      description: `Setup cost received from ${franchise.franchiseSlug}: $${setupCost.toLocaleString()}`,
+      description: `Setup cost received from ${franchise.franchiseSlug}: ₹${setupCost.toLocaleString()}`,
       status: "completed",
-      transactionHash: `pending_setup_${args.franchiseId}_${Date.now()}`,
       createdAt: Date.now(),
     });
-    
+
     console.log(`✅ Setup cost transaction created:`, setupCostTransactionId);
 
     // Update franchise stage to launching
@@ -1416,7 +1350,7 @@ export const checkAndCloseFranchise = mutation({
       .filter((q) => q.eq(q.field("status"), "active"))
       .first();
 
-    if (!franchiseWallet || franchiseWallet.balance <= 0) {
+    if (!franchiseWallet || (franchiseWallet.balanceInPaise ?? 0) <= 0) {
       // Update franchise stage to closed
       await ctx.db.patch(args.franchiseId, {
         stage: "closed",
@@ -1450,7 +1384,7 @@ export const checkAndCloseFranchise = mutation({
     return {
       success: false,
       currentStage: franchise.stage,
-      balance: franchiseWallet.balance,
+      balanceInPaise: franchiseWallet.balanceInPaise,
     };
   },
 });
@@ -1544,9 +1478,9 @@ export const getSharesByInvestor = query({
 export const processShareRefund = mutation({
   args: {
     shareId: v.id("franchiseShares"),
-    refundTransactionHash: v.optional(v.string()),
+    refundRazorpayId: v.optional(v.string()),
   },
-  handler: async (ctx, { shareId, refundTransactionHash }) => {
+  handler: async (ctx, { shareId, refundRazorpayId }) => {
     const share = await ctx.db.get(shareId);
     if (!share) {
       throw new Error("Share record not found");
@@ -1558,23 +1492,10 @@ export const processShareRefund = mutation({
 
     // Update share status to refunded
     await ctx.db.patch(shareId, {
-      status: "refunded" as any, // We'll need to update the schema to include refunded status
+      status: "refunded",
       refundedAt: Date.now(),
-      refundTransactionHash,
+      refundRazorpayId,
     });
-
-    // Burn tokens for the refund
-    try {
-      await ctx.runMutation(api.tokenManagement.burnTokensForRefund, {
-        franchiseId: share.franchiseId,
-        investorId: share.investorId,
-        amount: share.sharesPurchased, // Burn the same amount of tokens
-        refundTransactionHash,
-      });
-    } catch (error) {
-      console.error("Failed to burn tokens for refund:", error);
-      // Continue with refund even if token burning fails
-    }
 
     // Get franchise and investment data
     const franchise = await ctx.db.get(share.franchiseId);
@@ -1582,7 +1503,7 @@ export const processShareRefund = mutation({
 
     if (investment) {
       // Update investment totals (subtract the refunded shares)
-      const newTotalInvested = Math.max(0, investment.totalInvested - share.totalAmount);
+      const newTotalInvested = Math.max(0, investment.totalInvested - (share.totalAmountInPaise ?? 0) / 100);
       const newSharesPurchased = Math.max(0, investment.sharesPurchased - share.sharesPurchased);
 
       await ctx.db.patch(investment._id, {
@@ -1793,7 +1714,7 @@ export const getFranchiseFundraisingData = query({
 
     // Calculate aggregated data
     const totalSharesIssued = shares.reduce((sum, share) => sum + share.sharesPurchased, 0);
-    const totalAmountRaised = shares.reduce((sum, share) => sum + share.totalAmount, 0);
+    const totalAmountRaised = shares.reduce((sum, share) => sum + (share.totalAmountInPaise ?? 0) / 100, 0);
     const totalShares = investment.sharesIssued || 100000;
     const sharesRemaining = totalShares - totalSharesIssued;
     const progressPercentage = totalShares > 0 ? (totalSharesIssued / totalShares) * 100 : 0;
@@ -1855,11 +1776,9 @@ export const transitionToOngoingStage = mutation({
       await ctx.db.insert("franchiseWalletTransactions", {
         franchiseWalletId: franchiseWallet._id,
         franchiseId: franchiseId,
-        transactionType: "transfer_in", // Using transfer_in as closest match
-        amount: 0, // SOL amount
-        inrAmount: 0, // No monetary amount for stage transition
+        transactionType: "transfer_in",
+        amountInPaise: 0,
         description: `Franchise transitioned from launching to ongoing stage`,
-        transactionHash: `stage_transition_${franchiseId}_${now}`,
         status: "confirmed",
         createdAt: now,
       });
@@ -1905,10 +1824,10 @@ export const checkAllFranchiseStages = mutation({
                 .first();
 
               if (franchiseWallet) {
+                const totalInPaise = Math.round(investment.totalInvestment * 100);
                 // Update franchise wallet balance with funded amount
                 await ctx.db.patch(franchiseWallet._id, {
-                  balance: investment.totalInvestment,
-                  inrBalance: investment.totalInvestment,
+                  balanceInPaise: totalInPaise,
                   updatedAt: Date.now(),
                 });
 
@@ -1917,10 +1836,8 @@ export const checkAllFranchiseStages = mutation({
                   franchiseWalletId: franchiseWallet._id,
                   franchiseId: franchise._id,
                   transactionType: "funding",
-                  amount: 0, // SOL amount (not used for USD transactions)
-                  inrAmount: investment.totalInvestment,
-                  description: `Funding completed - $${investment.totalInvestment.toLocaleString()} transferred from escrow to franchise wallet`,
-                  transactionHash: `funding_complete_${franchise._id}_${Date.now()}`,
+                  amountInPaise: totalInPaise,
+                  description: `Funding completed — ₹${investment.totalInvestment.toLocaleString()} released from escrow to franchise wallet`,
                   status: "confirmed",
                   createdAt: Date.now(),
                 });
@@ -2018,7 +1935,7 @@ export const debugFranchiseStatus = query({
       .collect();
 
     const totalSharesIssued = shares.reduce((sum, share) => sum + share.sharesPurchased, 0);
-    const totalAmountRaised = shares.reduce((sum, share) => sum + share.totalAmount, 0);
+    const totalAmountRaised = shares.reduce((sum, share) => sum + (share.totalAmountInPaise ?? 0) / 100, 0);
     const fundingProgress = investment.totalInvestment > 0 
       ? (investment.totalInvested / investment.totalInvestment) * 100 
       : 0;
@@ -2065,7 +1982,7 @@ export const getFranchiseFundraisingDataById = query({
 
     // Calculate aggregated data
     const totalSharesIssued = shares.reduce((sum, share) => sum + share.sharesPurchased, 0);
-    const totalAmountRaised = shares.reduce((sum, share) => sum + share.totalAmount, 0);
+    const totalAmountRaised = shares.reduce((sum, share) => sum + (share.totalAmountInPaise ?? 0) / 100, 0);
     const totalShares = investment.sharesIssued || 100000;
     const sharesRemaining = totalShares - totalSharesIssued;
     const progressPercentage = totalShares > 0 ? (totalSharesIssued / totalShares) * 100 : 0;
@@ -2187,7 +2104,7 @@ export const fixFranchiseWithoutWallet = mutation({
         success: false,
         message: "Wallet already exists for this franchise",
         walletId: existingWallet._id,
-        currentBalance: existingWallet.inrBalance
+        currentBalance: existingWallet.balanceInPaise
       };
     }
 
@@ -2203,10 +2120,8 @@ export const fixFranchiseWithoutWallet = mutation({
     // Create franchise wallet
     const franchiseWalletId = await ctx.db.insert("franchiseWallets", {
       franchiseId: franchise._id,
-      walletAddress: `franchise_${franchise._id}_${now}`,
       walletName: `${franchise.franchiseSlug} Wallet`,
-      balance: workingCapital / 200,
-      inrBalance: workingCapital,
+      balanceInPaise: Math.round(workingCapital * 100),
       totalIncome: 0,
       totalExpenses: 0,
       totalPayouts: 0,
@@ -2522,7 +2437,7 @@ export const getAllFranchisesDebug = query({
           stage: franchise.stage,
           createdAt: franchise.createdAt,
           hasWallet: !!wallet,
-          walletAddress: wallet?.walletAddress,
+          walletBalance: wallet?.balanceInPaise,
           franchiserName: franchiser?.name,
         };
       })

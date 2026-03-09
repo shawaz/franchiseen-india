@@ -56,9 +56,10 @@ export const createExpense = mutation({
         });
 
         // Update wallet balance
+        const amountInPaise = Math.round(args.amount * 100);
         await ctx.db.patch(wallet._id, {
-          inrBalance: wallet.inrBalance - args.amount,
-          totalExpenses: (wallet.totalExpenses || 0) + args.amount,
+          balanceInPaise: (wallet.balanceInPaise ?? 0) - amountInPaise,
+          totalExpenses: (wallet.totalExpenses || 0) + amountInPaise,
           updatedAt: now,
         });
       }

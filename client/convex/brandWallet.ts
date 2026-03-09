@@ -1,132 +1,58 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-/**
- * Create a new brand wallet for a franchiser
- * This generates a new Solana keypair and stores the encrypted secret key
- */
+/** Create/refresh a brand wallet entry for a franchiser. */
 export const createBrandWallet = mutation({
   args: {
     franchiserId: v.id("franchiser"),
-    encryptedSecretKey: v.string(), // The secret key should be encrypted before calling this
   },
   handler: async (ctx, args) => {
-    // Verify the franchiser exists
     const franchiser = await ctx.db.get(args.franchiserId);
-    if (!franchiser) {
-      throw new Error("Franchiser not found");
-    }
+    if (!franchiser) throw new Error("Franchiser not found");
 
-    // Update the franchiser with the wallet information
-    await ctx.db.patch(args.franchiserId, {
-      updatedAt: Date.now(),
-    });
-
+    await ctx.db.patch(args.franchiserId, { updatedAt: Date.now() });
     return { success: true };
   },
 });
 
-/**
- * Get franchiser wallet information
- */
+/** Get franchiser wallet info. */
 export const getFranchiserWallet = query({
-  args: {
-    franchiserId: v.id("franchiser"),
-  },
+  args: { franchiserId: v.id("franchiser") },
   handler: async (ctx, args) => {
     const franchiser = await ctx.db.get(args.franchiserId);
-    if (!franchiser) {
-      throw new Error("Franchiser not found");
-    }
-
-    return {
-      ownerUserId: franchiser.ownerUserId,
-      brandWalletAddress: franchiser.brandWalletAddress,
-      hasSecretKey: false, // No longer storing secret keys
-      // Note: We don't return the actual secret key for security
-    };
+    if (!franchiser) throw new Error("Franchiser not found");
+    return { ownerUserId: franchiser.ownerUserId };
   },
 });
 
-/**
- * Update franchiser wallet information
- */
+/** Update franchiser record (no-op for wallet fields removed in Solana cleanup). */
 export const updateFranchiserWallet = mutation({
   args: {
     franchiserId: v.id("franchiser"),
-    ownerWalletAddress: v.optional(v.string()),
-    brandWalletAddress: v.optional(v.string()),
-    encryptedSecretKey: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    // Verify the franchiser exists
     const franchiser = await ctx.db.get(args.franchiserId);
-    if (!franchiser) {
-      throw new Error("Franchiser not found");
-    }
-
-    // Update the franchiser wallet information
-    const updateData: any = {
-      updatedAt: Date.now(),
-    };
-
-    if (args.brandWalletAddress) {
-      updateData.brandWalletAddress = args.brandWalletAddress;
-    }
-
-    // Note: No longer storing secret keys or owner wallet addresses
-
-    await ctx.db.patch(args.franchiserId, updateData);
-
+    if (!franchiser) throw new Error("Franchiser not found");
+    await ctx.db.patch(args.franchiserId, { updatedAt: Date.now() });
     return { success: true };
   },
 });
 
-/**
- * Get franchiser by owner wallet address
- */
-export const getFranchiserByWallet = query({
-  args: {
-    walletAddress: v.string(),
-  },
+/** Get franchiser by owner user ID. */
+export const getFranchiserByOwner = query({
+  args: { userId: v.id("users") },
   handler: async (ctx, args) => {
-    // First get the user by wallet address
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_walletAddress", (q) => q.eq("walletAddress", args.walletAddress))
-      .first();
-    
-    if (!user) {
-      return null;
-    }
-    
-    // Then get franchiser by user ID
     const franchiser = await ctx.db
       .query("franchiser")
-      .withIndex("by_ownerUser", (q) => q.eq("ownerUserId", user._id))
+      .withIndex("by_ownerUser", (q) => q.eq("ownerUserId", args.userId))
       .first();
 
-    if (!franchiser) {
-      return null;
-    }
-
-    return {
-      _id: franchiser._id,
-      ownerUserId: franchiser.ownerUserId,
-      brandWalletAddress: franchiser.brandWalletAddress,
-      name: franchiser.name,
-      slug: franchiser.slug,
-      logoUrl: franchiser.logoUrl,
-      status: franchiser.status,
-      hasSecretKey: false, // No longer storing secret keys
-      // Note: We don't return the secret key for security
-    };
+    if (!franchiser) return null;
+    return { _id: franchiser._id, ownerUserId: franchiser.ownerUserId, name: franchiser.name, slug: franchiser.slug, status: franchiser.status };
   },
 });
 
-/**
- * Get brand wallet transactions for a franchiser
- */
+/** Get brand wallet transactions for a franchiser. */
 export const getBrandWalletTransactions = query({
   args: {
     franchiserId: v.id("franchiser"),
@@ -137,38 +63,20 @@ export const getBrandWalletTransactions = query({
       .query("brandWalletTransactions")
       .withIndex("by_franchiser", (q) => q.eq("franchiserId", args.franchiserId))
       .order("desc")
-      .take(args.limit || 50);
+      .take(args.limit ?? 50);
 
-    // Get franchise details for transactions that have franchiseId
-    const transactionsWithDetails = await Promise.all(
-      transactions.map(async (transaction) => {
-        let franchise = null;
-        if (transaction.franchiseId) {
-          franchise = await ctx.db.get(transaction.franchiseId);
-        }
-
-        return {
-          ...transaction,
-          franchise: franchise ? {
-            _id: franchise._id,
-            franchiseSlug: franchise.franchiseSlug,
-            title: franchise.franchiseSlug
-          } : null
-        };
+    return await Promise.all(
+      transactions.map(async (tx) => {
+        const franchise = tx.franchiseId ? await ctx.db.get(tx.franchiseId) : null;
+        return { ...tx, franchise: franchise ? { slug: franchise.franchiseSlug } : null };
       })
     );
-
-    return transactionsWithDetails;
   },
 });
 
-/**
- * Get brand wallet balance (sum of all transactions)
- */
+/** Get total brand wallet balance (sum of completed transactions). */
 export const getBrandWalletBalance = query({
-  args: {
-    franchiserId: v.id("franchiser"),
-  },
+  args: { franchiserId: v.id("franchiser") },
   handler: async (ctx, args) => {
     const transactions = await ctx.db
       .query("brandWalletTransactions")
@@ -176,23 +84,15 @@ export const getBrandWalletBalance = query({
       .filter((q) => q.eq(q.field("status"), "completed"))
       .collect();
 
-    // Calculate total balance (incoming - outgoing)
     let balance = 0;
-    for (const transaction of transactions) {
-      if (transaction.type === "franchise_funding_complete" || 
-          transaction.type === "franchise_fee" || 
-          transaction.type === "setup_cost" ||
-          transaction.type === "revenue") {
-        balance += transaction.amount;
-      } else if (transaction.type === "expense" || transaction.type === "transfer") {
-        balance -= transaction.amount;
+    for (const tx of transactions) {
+      if (["franchise_funding_complete", "franchise_fee", "setup_cost", "royalty", "revenue"].includes(tx.type)) {
+        balance += tx.amount;
+      } else if (["expense", "transfer"].includes(tx.type)) {
+        balance -= tx.amount;
       }
     }
 
-    return {
-      balance,
-      transactionCount: transactions.length,
-      lastTransaction: transactions.length > 0 ? transactions[0] : null
-    };
+    return { balance, transactionCount: transactions.length };
   },
 });

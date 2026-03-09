@@ -388,11 +388,12 @@ export const getIndustriesAndCategories = query({
 
 // Get user's investment portfolio
 export const getMyPortfolio = query({
-  args: { walletAddress: v.string() },
-  handler: async (ctx, { walletAddress }) => {
+  args: { userId: v.id("users") },
+  handler: async (ctx, { userId }) => {
     const shares = await ctx.db
       .query("franchiseShares")
-      .withIndex("by_investor", (q) => q.eq("investorId", walletAddress))
+      .withIndex("by_investor", (q) => q.eq("investorId", userId))
+      .filter((q) => q.eq(q.field("status"), "confirmed"))
       .collect()
 
     const portfolio = await Promise.all(

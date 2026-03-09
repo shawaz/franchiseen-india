@@ -57,7 +57,7 @@ export const createTask = mutation({
         title: v.string(),
         description: v.optional(v.string()),
         assigneeId: v.optional(v.id("adminUsers")),
-        assignedByWallet: v.string(), // We get the wallet address from the client UI
+        assignedByWallet: v.string(), // We get the email from the client UI
         department: v.union(
             v.literal('management'),
             v.literal('operations'),
@@ -75,7 +75,7 @@ export const createTask = mutation({
         // Look up the admin user who is creating it
         const assignedByAdmin = await ctx.db
             .query("adminUsers")
-            .withIndex("by_walletAddress", (q) => q.eq("walletAddress", args.assignedByWallet))
+            .withIndex("by_email", (q) => q.eq("email", args.assignedByWallet))
             .first();
 
         if (!assignedByAdmin) {

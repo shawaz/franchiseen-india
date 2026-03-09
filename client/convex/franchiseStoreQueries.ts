@@ -141,7 +141,7 @@ export const getFranchiseInvestorsBySlug = query({
       
       const investor = investorMap.get(investorId);
       investor.totalShares += share.sharesPurchased;
-      investor.totalInvested += share.totalAmount;
+      investor.totalInvested += (share.totalAmountInPaise ?? 0);
       investor.firstPurchaseDate = Math.min(investor.firstPurchaseDate, share.purchasedAt);
       investor.lastPurchaseDate = Math.max(investor.lastPurchaseDate, share.purchasedAt);
       investor.transactions.push(share);
@@ -150,19 +150,14 @@ export const getFranchiseInvestorsBySlug = query({
     // Convert map to array and get user profile data for each investor
     const investors = await Promise.all(
       Array.from(investorMap.values()).map(async (investor) => {
-        // Get user by wallet address
-        const user = await ctx.db
-          .query("users")
-          .withIndex("by_walletAddress", (q) => q.eq("walletAddress", investor.investorId))
-          .first();
+        // Get user by ID (investorId is now a users table ID)
+        const user = await ctx.db.get(investor.investorId);
 
         return {
           ...investor,
           firstPurchaseDate: new Date(investor.firstPurchaseDate).toISOString().split('T')[0],
           lastPurchaseDate: new Date(investor.lastPurchaseDate).toISOString().split('T')[0],
-          // Calculate earned amount (simplified - in real app this would be based on franchise performance)
-          totalEarned: investor.totalInvested * 0.1, // 10% return for demo
-          // Add user profile data
+          totalEarned: investor.totalInvested * 0.1,
           userProfile: user ? {
             fullName: user.fullName,
             avatar: user.avatarUrl,
